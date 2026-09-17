@@ -1,0 +1,4541 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Root Companion</title>
+<style>
+:root {
+    --bg-woodland: #f4edd2;      /* Warm parchment feel */
+    --panel-bg: #ffffff;
+    --text-dark: #2d2621;
+    --text-muted: #5a5047;
+    --border-color: #d1c7a7;
+    --primary-accent: #8c5b3f;   /* Classic Root brown */
+    
+    /* Global Card/Suit Colors */
+    --color-bird: #4381a1;
+    --color-fox: #d64933;
+    --color-rabbit: #de9b35;
+    --color-mouse: #6b8f42;
+
+    /* Faction Colours */
+    --color-marquise: #e5732f;
+    --color-eyrie: #2f7ca5;
+    --color-woodland: #558b2f;
+    --color-vagabond: #7a5c43;
+    --color-duchy: #b27329;
+    --color-corvid: #4a154b;
+
+    
+    --font-main: 'Helvetica Neue', Arial, sans-serif;
+    --radius: 8px;
+    --shadow: 0 4px 6px rgba(0,0,0,0.05);
+  }
+
+  body {
+    font-family: var(--font-main);
+    background-color: var(--bg-woodland);
+    color: var(--text-dark);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* --- Global Smooth Scrolling --- */
+html {
+  scroll-behavior: smooth;
+}
+
+/* --- Upgraded Sidebar Layout --- */
+.sidebar {
+  width: 260px;
+  background-color: #1e1915; /* Deeper charcoal-wood color */
+  color: #fff;
+  padding: 1.5rem 1rem;
+  position: fixed;
+  height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  border-right: 3px solid var(--primary-accent);
+}
+
+.sidebar-brand h2 { 
+  color: #fff; 
+  margin: 0; 
+  font-size: 1.4rem; 
+  letter-spacing: 0.5px;
+}
+
+.version-tag {
+  font-size: 0.7rem;
+  color: #bfae93;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.sidebar-nav {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Sidebar Section Headers & Links */
+.nav-section {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #a39585;
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  text-transform: uppercase;
+}
+
+.nav-link.oracle-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e2d7c5;
+  text-decoration: none;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-link.oracle-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/* Custom Hover & Active Scrollspy State for the Law of Root Assistant */
+.nav-link.oracle-link:hover,
+.nav-link.oracle-link.active-section {
+  background-color: var(--primary-accent) !important; /* Deep mystic purple (or use any custom color) */
+  color: #ffffff !important;
+  transform: translateX(3px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+.nav-section-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #8c7e6c;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin: 0.5rem 0 0.5rem 0.5rem;
+}
+
+.nav-section-title.separated {
+  margin-top: 1.75rem;
+  border-top: 1px solid #332b24;
+  padding-top: 1rem;
+}
+
+/* Core Navigation Links */
+.nav-link {
+  display: block;
+  color: #c7bdae;
+  text-decoration: none;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  background-color: var(--primary-accent);
+  color: #fff;
+  transform: translateX(3px);
+}
+
+/* Scrollspy Active Link Class */
+.nav-link.active-section {
+  background-color: var(--primary-accent) !important;
+  color: #fff !important;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+
+/* Generic Active & Hover rule using dynamic local variable */
+.faction-link.active-section,
+.faction-link:hover {
+  background-color: var(--faction-color) !important;
+  color: #fff !important;
+}
+
+/* Variable mapping */
+.cat-style { --faction-color: var(--color-marquise); }
+.bird-style    { --faction-color: var(--color-eyrie); }
+.alliance-style { --faction-color: var(--color-woodland); }
+.vagabond-style { --faction-color: var(--color-vagabond); }
+.duchy-style    { --faction-color: var(--color-duchy); }
+.corvid-style   { --faction-color: var(--color-corvid); }
+
+
+
+
+/* Faction-specific placeholding styles */
+.faction-link.locked {
+  opacity: 0.5;
+  font-style: italic;
+  cursor: not-allowed;
+}
+.faction-link.locked:hover {
+  transform: none;
+  background: none;
+  color: #c7bdae;
+}
+
+/* --- Sandbox Pieces Grid & Visual Styles --- */
+.faction-zone div {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem 0.2rem;
+  box-sizing: border-box;
+}
+
+/* Fix stretched pieces inside the clearing sandbox */
+.pieces-display > * {
+  width: 32px !important;
+  height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+
+/* Base shapes for all piece types */
+.piece-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  display: inline-block;
+}
+
+.piece-square {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  display: inline-block;
+}
+
+.piece-token {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  display: inline-block;
+  border-style: dashed;
+}
+
+/* Faction Specific Color Profiles */
+.cat-warrior { background-color: #e5732f; }    /* Asymmetric Orange */
+.cat-building { background-color: #b85214; }   /* Darker Orange Square */
+
+.eyrie-warrior { background-color: #2f7ca5; }   /* Asymmetric Blue */
+.eyrie-building { background-color: #1a4d6b; }  /* Darker Blue Square */
+
+.alliance-warrior { background-color: #558b2f; } /* Asymmetric Green */
+.alliance-building { background-color: #2e5b12; }   /* Darker Green Square */
+
+.duchy-warrior { background-color: #b27329; }
+
+.corvid-warrior { background-color: #4a154b; }
+
+
+  /* --- Main Content Area --- */
+  .main-wrapper {
+    margin-left: 260px; /* Offset for sidebar */
+    padding: 3rem;
+    max-width: 1200px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  header h1 {
+    font-size: 2.5rem;
+    margin-top: 0;
+    color: var(--primary-accent);
+    border-bottom: 3px solid var(--border-color);
+    padding-bottom: 1rem;
+  }
+
+  /* --- Two-Column Structural Layout --- */
+
+  
+  
+  
+  
+  /*PINPOINT RULES SPACING*/
+
+  .rule-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Rule text left, Sandbox/Visual right */
+    gap: 2.5rem;
+    margin-bottom: 4rem;
+    align-items: start;
+  }
+
+  .content-section {
+    display: grid;
+    gap: 2.5rem;
+    margin-bottom: 4rem;
+    align-items: start;
+  }
+
+
+
+
+
+
+  @media (max-width: 900px) {
+    .rule-section { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main-wrapper { margin-left: 0; padding: 1.5rem; }
+  }
+
+  /* --- UI Component Styling --- */
+  .card-panel {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+  }
+  
+  .visualizer-pane {
+    background: #e6dfc3;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius);
+    padding: 2rem;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    top: 2rem;
+  }
+
+  .visualizer-pane-stat {
+    background: #e6dfc3;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius);
+    padding: 0;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    position: relative;
+    top: 2rem;
+    overflow: hidden;
+    margin-bottom: 50px;
+  }
+
+  
+  h2, h3 { color: var(--primary-accent); }
+  ul, ol { padding-left: 1.25rem; line-height: 1.6; color: var(--text-muted); }
+  li { margin-bottom: 0.5rem; }
+  strong { color: var(--text-dark); }
+
+  /* Colour for H2 and Border for factions */
+
+  .black {color:#1a031c}
+
+  .border-marquise {
+    background-color: #e5732f; 
+    width: 100%;               
+    padding: 1.5rem 0;         
+    text-align: center;        
+    box-sizing: border-box;    
+  }
+
+  .border-eyrie {
+    background-color: #2f7ca5; 
+    width: 100%;               
+    padding: 1.5rem 0;         
+    text-align: center;        
+    box-sizing: border-box;    
+  }
+
+
+  .border-woodland {
+    background-color: #558b2f; 
+    width: 100%;               
+    padding: 1.5rem 0;         
+    text-align: center;        
+    box-sizing: border-box;    
+  }
+
+
+  .border-vagabond {
+    background-color: #7a5c43; 
+    width: 100%;               
+    padding: 1.5rem 0;         
+    text-align: center;        
+    box-sizing: border-box;    
+  }
+
+  .border-duchy {
+    background-color: #b27329; 
+    width: 100%;               
+    padding: 1.5rem 0;         
+    text-align: center;        
+    box-sizing: border-box;    
+  }
+
+
+  .border-corvid {
+    background-color: #4a154b; 
+    width: 100%;               
+    padding: 1.5rem 0;         
+    text-align: center;        
+    box-sizing: border-box;    
+  }
+
+
+  .pane-body {
+    padding: 1.5rem;
+}
+
+.mechanics-table th,
+.mechanics-table td {
+  padding: 12px 18px; /* Vertical padding | Horizontal padding */
+}
+
+
+
+
+
+
+
+
+
+
+  /* Interactive Tooltip / Badge Placeholders */
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #fff;
+  }
+  .badge.bird { background-color: var(--color-bird); }
+
+
+
+ /* ==========================================================================
+   SANDBOX COMPONENT FIXES (Copy & paste inside your <style> tags)
+   ========================================================================== */
+
+#rule-sandbox.visualizer-pane {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background: #e6dfc3;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+/* 1. The Circular Board Layout */
+/* Update the container layout to account for three columns */
+/* --- Fixed Clearing Board Layout --- */
+.clearing-board {
+  width: 260px;
+  height: 260px;
+  background: #fffdf6;
+  border: 4px solid #bfae93;
+  border-radius: 50% !important;
+  
+  /* CRITICAL FIXED PROPERTIES */
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important; /* Strictly prevents the 3rd column from dropping below */
+  align-items: stretch !important;
+  
+  overflow: hidden;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.15);
+  margin: 1.5rem auto; /* Centers the circle nicely in the pane */
+  box-sizing: border-box;
+}
+
+.faction-zone {
+  /* CRITICAL: Force exact mathematical thirds inside the parent flex container */
+  width: 33.333% !important;
+  max-width: 33.333% !important;
+  flex: 0 0 33.333% !important;
+  
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  
+  /* Increased top padding significantly so text sits safely inside the curve */
+  padding: 2.5rem 0.2rem 0.5rem 0.2rem !important; 
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.zone-label {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  color: var(--text-dark);
+  position: absolute;
+  
+  /* Pushed down slightly more to clear the upper ceiling curve of the circle */
+  top: 24px !important; 
+  
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.faction-zone.cats { border-right: 1px dashed #d1c7a7; background-color: rgba(214, 73, 51, 0.02); }
+.faction-zone.birds { border-right: 1px dashed #d1c7a7; background-color: rgba(67, 129, 161, 0.02); }
+.faction-zone.woodland { background-color: rgba(107, 143, 66, 0.02); }
+
+/* Active Highlights */
+.faction-zone.rules-active.cats { background-color: rgba(214, 73, 51, 0.15) !important; }
+.faction-zone.rules-active.birds { background-color: rgba(67, 129, 161, 0.15) !important; }
+.faction-zone.rules-active.woodland { background-color: rgba(107, 143, 66, 0.15) !important; }
+
+
+/* 3. The Interactive Buttons Dashboard Layout */
+.sandbox-controls {
+  display: flex !important;
+  flex-wrap: wrap !important; /* Allows layout to flow onto a new line cleanly if crowded */
+  gap: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.controls-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  max-width: 900px;
+  margin: 1.5rem auto;
+}
+
+.control-group {
+  background: #fffdf6;
+  border: 1px solid #bfae93;
+  border-radius: 8px;
+  padding: 1rem;
+  flex: 1 1 160px; /* Expands evenly side-by-side */
+  min-width: 150px;
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.control-group h6 { 
+  margin: 0 0 0.75rem 0;
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--text-dark);
+}
+
+.btn-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+  width: 100%;
+  justify-content: center;
+}
+
+.control-group button {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  border: 1px solid #bfae93;
+  border-radius: 4px;
+  background: #ffffff;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.control-group button:hover { background: #f4edd2; }
+
+/* 4. Live Pieces Pool */
+.piece-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  justify-content: center;
+  width: 100%;
+  min-height: 20px;
+  margin-top: 5px;
+}
+
+.game-token {
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(0,0,0,0.3);
+  display: inline-block;
+}
+.game-token.warrior { border-radius: 50%; }
+.game-token.building { border-radius: 2px; }
+
+.cats .game-token.warrior { background-color: #d64933; }
+.cats .game-token.building { background-color: #8a2516; }
+.birds .game-token.warrior { background-color: #4381a1; }
+.birds .game-token.building { background-color: #1f485c; }
+.woodland .game-token.warrior { background-color: #6b8f42; }
+.woodland .game-token.building { background-color: #3b5223; clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
+
+/* 5. Status Banner Fixes */
+.sandbox-status {
+  width: 100%;
+  text-align: center;
+  padding: 0.6rem;
+  border-radius: var(--radius);
+  font-weight: bold;
+  font-size: 0.85rem;
+  background: #d1c7a7;
+  color: var(--text-dark);
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+.sandbox-status.cat-wins { background: #d64933 !important; color: white; }
+.sandbox-status.eyrie-wins { background: #4381a1 !important; color: white; }
+.sandbox-status.woodland-wins { background: #6b8f42 !important; color: white; }
+
+
+/* --- Battle Simulator Styling --- */
+#battle-simulator.visualizer-pane {
+  background: #e6dfc3;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.battle-steps-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.step-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #d1c7a7;
+  color: var(--text-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+.step-dot.active {
+  background: var(--primary-accent);
+  color: white;
+}
+
+.battle-window {
+  width: 100%;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 1.25rem !important;
+  box-sizing: border-box;
+  min-height: 260px;
+}
+
+.battle-step-pane {
+  display: none;
+  flex-direction: column;
+}
+.battle-step-pane.active {
+  display: flex;
+}
+
+.battle-step-pane h5 { margin: 0 0 0.5rem 0; color: var(--primary-accent); font-size: 1.1rem; }
+.battle-step-pane p { font-size: 0.85rem; margin: 0 0 1rem 0; line-height: 1.4; }
+
+.battle-flex-row {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1.25rem;
+  background: #fdfbf7;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+.battle-flex-row label { font-size: 0.8rem; font-weight: bold; }
+.battle-flex-row input { width: 50px; padding: 0.2rem; margin-left: 0.2rem; }
+
+.action-buttons-group { display: flex; gap: 0.5rem; }
+
+.battle-btn {
+  flex: 1;
+  padding: 0.6rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border: 1px solid #bfae93;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.battle-btn:hover:not(:disabled) { background: #f4edd2; }
+.battle-btn.action { background: var(--primary-accent); color: white; border-color: var(--primary-accent); }
+.battle-btn.action:hover { background: #734a32; }
+.battle-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.micro-note { font-style: italic; color: #a13b2d; margin-top: 0.5rem !important; font-size: 0.75rem !important; }
+
+/* Dice Custom Graphics */
+.dice-container { display: flex; gap: 2rem; justify-content: center; margin: 1rem 0; }
+.die {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+  border: 2px solid rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+.attacker-die { background: #d64933; }
+.defender-die { background: #4381a1; }
+
+/* Damage Calculation Breakdown Split */
+.hit-calc-box { display: flex; gap: 1rem; margin-bottom: 1rem; }
+.calc-side {
+  flex: 1;
+  background: #fdfbf7;
+  padding: 0.75rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+.calc-side h6 { margin: 0 0 0.4rem 0; font-size: 0.85rem; border-bottom: 1px solid #ddd; }
+.calc-side p { margin: 0 0 0.25rem 0 !important; font-size: 0.8rem !important; }
+.bonus-text { color: #527a2b; font-weight: bold; }
+.final-hits { font-weight: bold; font-size: 0.9rem !important; color: var(--text-dark); margin-top: 0.5rem !important; }
+
+.summary-banner {
+  background: #f4edd2;
+  border-left: 4px solid var(--primary-accent);
+  padding: 0.75rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+/* --- Setup Visualizer CSS --- */
+#setup-visualizer.visualizer-pane {
+  background: #e6dfc3;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.setup-item-supply, .setup-ruins-box {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.setup-item-supply h5, .setup-ruins-box h5 {
+  margin: 0 0 0.5rem 0;
+  color: var(--primary-accent);
+  font-size: 0.9rem;
+}
+
+/* Item Grid Structure */
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.item-slot {
+  background: #fff;
+  border: 1px solid #bfae93;
+  border-radius: 4px;
+  padding: 0.4rem 0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+  transition: all 0.2s;
+}
+.item-slot small {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  font-weight: bold;
+}
+.item-slot .item-count {
+  font-size: 0.65rem;
+  background: #ddd;
+  padding: 1px 3px;
+  border-radius: 3px;
+  margin-top: 2px;
+}
+
+/* Crafted/Taken State styling */
+.item-slot.crafted {
+  background: #d1c7a7;
+  opacity: 0.4;
+  border-style: dashed;
+}
+.item-slot.crafted .item-count {
+  background: #a09676;
+  color: white;
+}
+
+.setup-tip {
+  font-size: 0.7rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+/* Ruins layout elements */
+.ruins-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+
+.ruin-token {
+  width: 32px;
+  height: 32px;
+  background: #7a6f5c;
+  border: 2px solid #4a4135;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.2s;
+}
+
+.ruin-token.explored {
+  background: #e6dfc3;
+  color: transparent;
+  border: 2px dashed #bfae93;
+  box-shadow: none;
+  opacity: 0.5;
+}
+
+#ruins-status-text {
+  font-size: 0.8rem;
+  margin: 0;
+  font-weight: bold;
+  color: var(--text-dark);
+}
+
+
+/* --- Victory Tracker CSS --- */
+#victory-visualizer.visualizer-pane {
+  background: #e6dfc3;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.score-tracker-card, .dominance-activation-zone {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Faction VP Rows */
+.faction-score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed var(--border-color);
+}
+.faction-score-row:last-child { border-bottom: none; }
+
+.score-label-name { font-weight: bold; font-size: 0.9rem; }
+.score-controls { display: flex; align-items: center; gap: 0.75rem; }
+
+.score-controls button {
+  width: 24px;
+  height: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  border: 1px solid #bfae93;
+  background: white;
+  border-radius: 4px;
+}
+.score-controls button:hover { background: #f4edd2; }
+
+.score-value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  width: 28px;
+  text-align: center;
+}
+
+/* Dominance UI Settings */
+.dominance-activation-zone h5 {
+  margin: 0 0 0.75rem 0;
+  color: var(--primary-accent);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.dominance-buttons-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.dom-btn {
+  padding: 0.5rem;
+  font-weight: bold;
+  font-size: 0.75rem;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  transition: transform 0.1s;
+}
+.dom-btn:hover { transform: scale(1.02); }
+
+.dom-btn.fox { background-color: var(--color-fox); }
+.dom-btn.rabbit { background-color: var(--color-rabbit); }
+.dom-btn.mouse { background-color: var(--color-mouse); }
+.dom-btn.bird { background-color: var(--color-bird); }
+
+.dominance-msg {
+  margin: 0.75rem 0 0 0;
+  font-size: 0.8rem;
+  text-align: center;
+  font-weight: bold;
+  color: var(--text-dark);
+  line-height: 1.4;
+}
+
+.reset-victory-btn {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  background: transparent;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.reset-victory-btn:hover { background: rgba(0,0,0,0.05); }
+
+/* Faction row disabled display style when Dominance triggers */
+.faction-score-row.has-dominance .score-value { color: #999; text-decoration: line-through; }
+.faction-score-row.has-dominance button { opacity: 0.3; pointer-events: none; }
+
+
+
+
+.faction-header {
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-top: 2.5rem !important;
+  margin-bottom: 1.5rem;             
+}
+
+
+/* --- Marquise Faction Styles --- */
+.cat-banner {
+  background-color: #e5732f !important;
+  color: white;
+}
+
+.faction-subtitle { margin: 0; font-size: 0.85rem; opacity: 0.9; font-style: italic; }
+
+.phase-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 4px;
+  color: white;
+  margin-bottom: 0.4rem;
+}
+.birdsong-badge { background-color: #7a6f5c; }
+.daylight-badge { background-color: #d64933; }
+.evening-badge { background-color: #1e1915; }
+
+.phase-container-mq {
+  background: #fdfbf7;
+  padding: 0.75rem;
+  border-left: 4px solid #e5732f;
+  margin-bottom: 1rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.phase-container-ed {
+  background: #fdfbf7;
+  padding: 0.75rem;
+  border-left: 4px solid #2f7ca5;
+  margin-bottom: 1rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.phase-container-wa {
+  background: #fdfbf7;
+  padding: 0.75rem;
+  border-left: 4px solid #558b2f;
+  margin-bottom: 1rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.phase-container-vb {
+  background: #fdfbf7;
+  padding: 0.75rem;
+  border-left: 4px solid #7a5c43;
+  margin-bottom: 1rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.phase-container-ud {
+  background: #fdfbf7;
+  padding: 0.75rem;
+  border-left: 4px solid #b27329;
+  margin-bottom: 1rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.phase-container-cc {
+  background: #fdfbf7;
+  padding: 0.75rem;
+  border-left: 4px solid #4a154b;
+  margin-bottom: 1rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+
+/* Field Hospital Interface Styles */
+.hospital-simulator-box {
+  display: flex;
+  gap: 2rem;
+  background: #fdfbf7;
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  margin-top: 1rem;
+}
+
+.hospital-control-panel { flex: 1; }
+.hospital-control-panel label { font-size: 0.8rem; font-weight: bold; display: block; margin-bottom: 0.25rem; }
+
+.counter-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.counter-row button { padding: 0.2rem 0.5rem; font-weight: bold; cursor: pointer; }
+#casualty-count { font-weight: bold; font-size: 1.1rem; }
+.hospital-control-panel select { width: 100%; padding: 0.4rem; margin-bottom: 0.5rem; }
+
+.keep-zone-display {
+  flex: 1;
+  background: #fffdf6;
+  border: 3px double #b85214;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+  min-height: 120px;
+}
+.keep-token-badge {
+  font-size: 0.7rem;
+  background: #b85214;
+  color: white;
+  padding: 2px 6px;
+  font-weight: bold;
+  border-radius: 4px;
+  position: absolute;
+  top: -10px;
+  left: 10px;
+}
+.keep-pool-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* Strategy box customizations */
+.strategy-box ul { padding-left: 1.2rem; margin: 0.5rem 0 0 0; font-size: 0.85rem; }
+.strategy-box li { margin-bottom: 0.4rem; }
+.strategy-box.strength h6 { color: #558b2f; margin: 0; font-size: 0.95rem; }
+.strategy-box.weakness h6 { color: #a13b2d; margin: 0; font-size: 0.95rem; }
+
+
+/* --- Eyrie Faction Styles --- */
+.bird-banner {
+  background-color: #2f7ca5 !important;
+  color: white;
+}
+
+
+.bird-left-border {
+  border-left: 4px solid #2f7ca5 !important;
+}
+
+/* Decree Component Layouts */
+.decree-simulator-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: #fdfbf7;
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .decree-simulator-layout { flex-direction: row; }
+  .decree-controls { width: 300px; }
+}
+
+.decree-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.decree-controls label { font-size: 0.8rem; font-weight: bold; margin-top: 0.5rem; }
+.decree-controls select { padding: 0.4rem; width: 100%; border-radius: 4px; border: 1px solid var(--border-color); }
+.decree-button-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+.decree-add-btn { padding: 0.35rem; font-size: 0.75rem; font-weight: bold; cursor: pointer; border: 1px solid #bfae93; background: #fffdf6; border-radius: 4px; }
+.decree-add-btn:hover { background: #f4efe2; }
+
+.action-system-buttons { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+
+/* The Live Columns View */
+.decree-board-display {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  background: #ebe6d8;
+  padding: 0.75rem;
+  border-radius: 6px;
+  min-height: 180px;
+}
+
+.decree-column {
+  background: #fffdf6;
+  border: 1px solid #d4cbb5;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.4rem;
+}
+.column-title { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 0.5rem; color: #555; }
+.card-slot-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Micro Mini Mini Cards style */
+.mini-decree-card {
+  padding: 4px 6px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  border-radius: 3px;
+  text-align: center;
+  border: 1px solid rgba(0,0,0,0.15);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+.card-suit-fox { background-color: #ffedd5; color: #c2410c; border-color: #fed7aa; }
+.card-suit-rabbit { background-color: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+.card-suit-mouse { background-color: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+.card-suit-bird { background-color: #dbeafe; color: #1d4ed8; border-color: #bfdbfe; }
+
+.micro-note-log {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+  min-height: 18px;
+}
+
+
+/* --- Woodland Alliance Faction Styles --- */
+.alliance-banner {
+  background-color: #558b2f !important;
+  color: white;
+}
+
+.alliance-left-border {
+  border-left: 4px solid #558b2f !important;
+}
+
+/* Insurgency Dashboard Layouts */
+.insurgency-simulator-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: #fdfbf7;
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .insurgency-simulator-box { flex-direction: row; }
+  .insurgency-controls { width: 300px; }
+}
+
+.insurgency-controls label { font-size: 0.8rem; font-weight: bold; margin-top: 0.5rem; display: block; }
+.insurgency-controls select { padding: 0.4rem; width: 100%; border-radius: 4px; border: 1px solid var(--border-color); margin-bottom: 0.5rem; }
+
+.stack-badge-counter {
+  background: #1c2e10;
+  color: #fffdf6;
+  padding: 0.5rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-align: center;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+/* Live Sympathy Node Grid */
+.map-simulation-display {
+  flex: 1;
+  background: #ebe6d8;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.sympathy-track-header {
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #555;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+.sympathy-tokens-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
+  flex-content: center;
+  min-height: 100px;
+}
+
+/* Big Sympathy Token Badges */
+.sympathy-badge-token {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px dashed #1c2e10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  animation: popIn 0.2s ease-out;
+}
+.sympathy-node-fox { background-color: #ffedd5; }
+.sympathy-node-rabbit { background-color: #fee2e2; }
+.sympathy-node-mouse { background-color: #dcfce7; }
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+.micro-note-insurgency-log {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+  color: #558b2f;
+  min-height: 18px;
+}
+
+
+
+
+/* --- Vagabond Faction Colors & Styles --- */
+.vagabond-banner {
+  background-color: #7a5c43 !important;
+  color: white;
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+}
+
+.satchel-simulator-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: #fdfbf7;
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .satchel-simulator-layout { flex-direction: row; }
+  .satchel-controls { width: 300px; }
+}
+
+.satchel-inventory-grids {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.satchel-bay {
+  background: #ebe6d8;
+  padding: 0.75rem;
+  border-radius: 6px;
+  min-height: 80px;
+}
+.critical-bay {
+  background: #fee2e2;
+  border: 1px dashed #fca5a5;
+}
+.bay-title { font-size: 0.7rem; font-weight: bold; margin-bottom: 0.5rem; color: #555; }
+
+.item-bead-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.item-bead {
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.15);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+}
+.status-ready { background-color: #fffdf6; color: #4e3629; }
+.status-exhausted { background-color: #d4cbb5; color: #777; border-style: dotted; text-decoration: line-through; }
+.status-damaged { background-color: #ef4444; color: white; border-color: #b91c1c; }
+
+
+
+
+/* --- Underground Duchy Faction Styles --- */
+.duchy-banner {
+  background-color: #b27329 !important;
+  color: white;
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+}
+
+.duchy-simulator-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: #fdfbf7;
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .duchy-simulator-layout { flex-direction: row; }
+  .duchy-controls { width: 300px; }
+}
+
+.duchy-cabinet-grids {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cabinet-bay {
+  background: #ebe6d8;
+  padding: 0.75rem;
+  border-radius: 6px;
+  min-height: 80px;
+}
+.metric-bay {
+  background: #f5f0eb;
+  border: 1px solid #d4cbb5;
+}
+
+.minister-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.minister-card-badge {
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 4px;
+  border: 2px solid #b27329;
+  background-color: #fffdf6;
+  color: #4a3319;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  animation: popIn 0.2s ease-out;
+}
+
+.rank-squire { border-color: #8c8275; }
+.rank-noble { border-color: #3a6073; }
+.rank-lord { border-color: #b27329; background-color: #fff9e6; }
+
+.empty-placeholder-note {
+  font-size: 0.8rem;
+  color: #777;
+  font-style: italic;
+  padding: 0.5rem;
+}
+
+
+/* Force wrapper and card to break out of fixed widths */
+.assistant-full-card,
+#ai-assistant-section,
+#ai-assistant-section > div,
+.chat-console-wrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+
+
+
+
+/* --- Corvid Conspiracy Faction Styles --- */
+.corvid-banner {
+  background-color: #4a154b !important;
+  color: white;
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+}
+
+.corvid-simulator-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: #fdfbf7;
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .corvid-simulator-layout { flex-direction: row; }
+  .corvid-controls { width: 300px; }
+}
+
+.corvid-map-display {
+  flex: 1;
+  background: #ebe6d8;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.corvid-plots-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 120px;
+  width: 100%;
+}
+
+/* Plot Badge Styling */
+.plot-token-badge {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 3px solid #4a154b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.plot-facedown {
+  background: radial-gradient(circle, #3a0d3b 0%, #1a031c 100%);
+  color: #d8b4fe;
+  border-color: #d8b4fe;
+  font-size: 1.2rem;
+}
+
+.plot-faceup {
+  background-color: #fffdf6;
+  animation: flipAnim 0.4s ease-out forwards;
+}
+
+@keyframes flipAnim {
+  0% { transform: rotateY(0deg) scale(0.8); }
+  100% { transform: rotateY(180deg) scale(1); }
+}
+
+
+
+
+/* Root Oracle Stuff*/
+
+/* Update these rules in your CSS */
+
+/* Container Box */
+.chat-card {
+  background: #fffdf6;
+  border: 2px solid #bfae93;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-sizing: border-box;
+}
+
+/* Chat Header */
+.chat-header {
+  background-color: #5c3a21;
+  color: #ffffff;
+  padding: 0.85rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #422815;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Chat Messages Box */
+.chat-messages-container {
+  padding: 1rem;
+  max-height: 350px;
+  min-height: 250px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Input Footer Bar */
+.chat-input-area {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #f4edd2;
+  border-top: 1px solid #d1c7a7;
+  box-sizing: border-box;
+}
+
+.chat-input-area input {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid #bfae93;
+  border-radius: 4px;
+}
+
+.chat-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.oracle-status-badge {
+  background-color: #8c5b3f;
+  color: #f4edd2;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.chat-logs {
+  height: 250px;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Message Styling inside Chat Container */
+.msg {
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  max-width: 85%;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.msg.user {
+  background-color: #e2d7c5;
+  color: #2d2621;
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+
+.msg.bot {
+  background-color: #f4edd2;
+  color: #422815;
+  border: 1px solid #d1c7a7;
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+.chat-input-bar {
+  display: flex;
+  border-top: 1px solid #bfae93;
+  padding: 0.5rem;
+  gap: 0.5rem;
+  background: #fff;
+}
+
+.chat-input-bar input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #bfae93;
+  border-radius: 4px;
+}
+
+.chat-input-bar button {
+  background: #8c5b3f;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+
+/* Force #oracle-section to act as a single full-width container */
+#oracle-section {
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Force the inner chat card to stretch to 100% width */
+#oracle-section .chat-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+
+
+</style>
+
+
+</head>
+<link rel="stylesheet" href="Root Companion CSS">
+<body>
+  
+  <aside class="sidebar">
+  <div class="sidebar-brand">
+    <h2>Root Companion</h2>
+    <span class="version-tag">v1.0 (Core Rules)</span>
+  </div>
+  
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">System Mechanics</div>
+    <a href="#setup" class="nav-link" id="link-setup">1. Game Setup</a>
+    <a href="#concepts" class="nav-link" id="link-concepts">2. Key Concepts</a>
+    <a href="#victory" class="nav-link" id="link-victory">3. Achieving Victory</a>
+    <a href="#actions" class="nav-link" id="link-actions">4. Key Actions</a>
+
+    <div class="nav-section-title separated">Woodland Factions</div>
+    <a href="#marquise-section" class="nav-link faction-link cat-style" id="link-marquise-section">🐱 Marquise de Cat</a>
+    <a href="#eyrie-section" class="nav-link faction-link bird-style" id="link-eyrie-section">🦅 Eyrie Dynasties</a>
+    <a href="#alliance-section" class="nav-link faction-link alliance-style" id="link-alliance-section">🦡 Woodland Alliance</a>
+    <a href="#vagabond-section" class="nav-link faction-link vagabond-style" id="link-vagabond-section">🦝 The Vagabond</a>
+    <a href="#duchy-section" class="nav-link faction-link duchy-style" id="link-duchy-section">🐹 Underground Duchy</a>
+    <a href="#corvid-section" class="nav-link faction-link corvid-style" id="link-corvid-section">🐦 Corvid Conspiracy</a>
+
+  </nav>
+
+  <!-- Sidebar Navigation Addition -->
+<div class="nav-section">
+  <div class="nav-header">GAME ASSISTANT</div>
+  <a href="#oracle-section" class="nav-link oracle-link">
+  <span>🔮</span> Law of Root Assistant
+</a>
+</div>
+
+</aside>
+
+  <main class="main-wrapper">
+    <header>
+      <h1>Core Rules Reference</h1>
+    </header>
+
+
+    <section id="setup" class="rule-section">
+      <div class="card-panel">
+        <h2>Setup</h2>
+        <ol>
+          <li><strong>Assign Factions & Starting Player:</strong> Assign one faction to each player in any way.</li>
+          <li><strong>Place Score Markers:</strong> Each player places their score marker on “0” on the score track.</li>
+          <li><strong>Draw Starting Hands:</strong> Each Player draws 3 cards.</li>
+          <li><strong>Place Ruins:</strong> Place a ruin in each slot on the map marked with “R”.</li>
+          <li><strong>Form Item Supply:</strong> Place these items on the corresponding spaces of the item supply near the top of the map (2 boots, 2 satchels, 1 crossbow, 1 hammer, 2 swords, 2 kettles, and 2 stacks of coins).</li>
+          <li><strong>Gather Other Pieces:</strong> Hand out the 16 faction overview cards as desired, and place the two dice near the map.</li>
+          <li><strong>Set Up Factions:</strong> In setup order (A, B, C, etc.), each player follows their faction’s setup instructions.</li>
+        </ol>
+      </div>
+      <!-- Interactive Rule Simulator Sandbox -->
+<div class="visualizer-pane" id="rule-sandbox">
+  <div class="sandbox-header">
+    <h4>Clearing Control Sandbox</h4>
+    <p>Click buttons to add/remove pieces and see who rules the clearing.</p>
+  </div>
+
+  <!-- Visual Clearing Box (Rounded Square Layout) -->
+<div class="clearing-board" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: stretch !important; overflow: hidden !important; width: 500px; min-height: 350px; border-radius: 12px !important; margin: 1.5rem auto; background: #fffdf6; border: 3px solid #bfae93; box-shadow: 0 4px 12px rgba(0,0,0,0.08); position: relative;">
+  
+  <!-- Column 1: Marquise -->
+  <div class="faction-zone" style="width: 20% !important; flex: 1 1 20% !important; display: flex !important; flex-direction: column !important; align-items: center !important; padding: 0.75rem 0.5rem !important; box-sizing: border-box; border-right: 1px dashed #bfae93;">
+    <span class="zone-label" style="position: relative !important; top: auto !important; font-size: 0.65rem; text-transform: uppercase; font-weight: bold; color: var(--text-dark); margin-bottom: 0.5rem; text-align: center;">Marquise</span>
+    <div id="sandbox-marquise-pieces" class="pieces-display" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: 100%;"></div>
+  </div>
+
+  <!-- Column 2: Eyrie -->
+  <div class="faction-zone" style="width: 20% !important; flex: 1 1 20% !important; display: flex !important; flex-direction: column !important; align-items: center !important; padding: 0.75rem 0.5rem !important; box-sizing: border-box; background-color: rgba(67, 129, 161, 0.08); border-right: 1px dashed #bfae93;">
+    <span class="zone-label" style="position: relative !important; top: auto !important; font-size: 0.65rem; text-transform: uppercase; font-weight: bold; color: var(--text-dark); margin-bottom: 0.5rem; text-align: center;">Eyrie</span>
+    <div id="sandbox-eyrie-pieces" class="pieces-display" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: 100%;"></div>
+  </div>
+
+  <!-- Column 3: Woodland Alliance -->
+  <div class="faction-zone" style="width: 20% !important; flex: 1 1 20% !important; display: flex !important; flex-direction: column !important; align-items: center !important; padding: 0.75rem 0.5rem !important; box-sizing: border-box; border-right: 1px dashed #bfae93;">
+    <span class="zone-label" style="position: relative !important; top: auto !important; font-size: 0.65rem; text-transform: uppercase; font-weight: bold; color: var(--text-dark); margin-bottom: 0.5rem; text-align: center;">Alliance</span>
+    <div id="sandbox-alliance-pieces" class="pieces-display" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: 100%;"></div>
+  </div>
+
+  <!-- Column 4: Duchy -->
+  <div class="faction-zone" style="width: 20% !important; flex: 1 1 20% !important; display: flex !important; flex-direction: column !important; align-items: center !important; padding: 0.75rem 0.5rem !important; box-sizing: border-box; background-color: rgba(67, 129, 161, 0.08); border-right: 1px dashed #bfae93;">
+    <span class="zone-label" style="position: relative !important; top: auto !important; font-size: 0.65rem; text-transform: uppercase; font-weight: bold; color: var(--text-dark); margin-bottom: 0.5rem; text-align: center;">Duchy</span>
+    <div id="sandbox-duchy-pieces" class="pieces-display" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: 100%;"></div>
+  </div>
+
+  <!-- Column 5: Corvid -->
+  <div class="faction-zone" style="width: 20% !important; flex: 1 1 20% !important; display: flex !important; flex-direction: column !important; align-items: center !important; padding: 0.75rem 0.5rem !important; box-sizing: border-box; ">
+    <span class="zone-label" style="position: relative !important; top: auto !important; font-size: 0.65rem; text-transform: uppercase; font-weight: bold; color: var(--text-dark); margin-bottom: 0.5rem; text-align: center;">Corvid</span>
+    <div id="sandbox-corvid-pieces" class="pieces-display" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: 100%;"></div>
+  </div>
+
+</div>
+
+  <!-- Control Panel Dashboard -->
+<div class="controls-grid">
+    <!-- Marquise Controls -->
+<div class="control-group">
+  <h6>Marquise de Cat</h6>
+  <div class="btn-row">
+  <button onclick="adjustSandboxPieces('catWarriors', 1)">+ Warrior</button>
+  <button onclick="adjustSandboxPieces('catWarriors', -1)">- Warrior</button>
+  </div>
+  <div class="btn-row">
+  <button onclick="adjustSandboxPieces('catBuildings', 1)">+ Building</button>
+  <button onclick="adjustSandboxPieces('catBuildings', -1)">- Building</button>
+  </div>
+</div>
+
+<!-- Eyrie Controls -->
+<div class="control-group">
+  <h6>Eyrie Dynasties</h6>
+  <div class="btn-row">
+  <button onclick="adjustSandboxPieces('eyrieWarriors', 1)">+ Warrior</button>
+  <button onclick="adjustSandboxPieces('eyrieWarriors', -1)">- Warrior</button>
+  </div>
+  <div class="btn-row">
+  <button onclick="adjustSandboxPieces('eyrieBuildings', 1)">+ Building</button>
+  <button onclick="adjustSandboxPieces('eyrieBuildings', -1)">- Building</button>
+  </div>
+</div>
+
+<!-- Woodland Alliance Controls -->
+<div class="control-group">
+  <h6>Woodland Alliance</h6>
+  <div class="btn-row">
+  <button onclick="adjustSandboxPieces('woodlandWarriors', 1)">+ Warrior</button>
+  <button onclick="adjustSandboxPieces('woodlandWarriors', -1)">- Warrior</button>
+  </div>
+  <div class="btn-row">
+  <button onclick="adjustSandboxPieces('woodlandBuildings', 1)">+ Building</button>
+  <button onclick="adjustSandboxPieces('woodlandBuildings', -1)">- Building</button>
+  </div>
+</div>
+
+<!-- Duchy Controls -->
+<div class="control-group">
+  <h6>Underground Duchy</h6>
+  <div class="btn-row">
+  <button onclick="adjustSandboxPieces('duchyWarriors', 1)">+ Warrior</button>
+  <button onclick="adjustSandboxPieces('duchyWarriors', -1)">- Warrior</button>
+  </div>
+</div>
+
+<!-- Corvid Controls -->
+<div class="control-group">
+  <h6>Corvid Conspiracy</h6>
+  <div class="btn-row">
+  <button onclick="adjustSandboxPieces('corvidWarriors', 1)">+ Warrior</button>
+  <button onclick="adjustSandboxPieces('corvidWarriors', -1)">- Warrior</button>
+  </div>
+</div>
+</div>
+
+
+  <!-- Real-time Status Banner -->
+  <div class="sandbox-status" id="sandbox-status-banner">
+    Contested Clearing (No Ruler)
+  </div>
+</div>
+      </div>
+    </section>
+
+
+    <section id="concepts" class="rule-section">
+      <div class="card-panel">
+        <h2>Key Concepts</h2>
+        <h3>Cards</h3>
+        <ul>
+          <li><strong>Birds are Wild <span class="badge bird">Bird</span></strong> - Treated as a card of another suit.</li>
+          <li><strong>Ambush Cards</strong> - 5 Ambush cards, can’t be crafted, may play one in battle to deal immediate hits.</li>
+          <li><strong>Dominance Cards</strong> - 4 Dominance cards, can’t be crafted, may play one to change your victory condition.</li>
+        </ul>
+        
+        <h3>Rule</h3>
+        <ul>
+          <li>A player rules a clearing if they have more total warriors and buildings in it than each other player.</li>
+        </ul>
+      </div>
+      
+      <!-- Interactive Map Setup Tracker -->
+<div class="visualizer-pane" id="setup-visualizer">
+  <div class="sandbox-header">
+    <h4>Global Map Setup Checklist</h4>
+    <p>Track common map elements before factions deploy.</p>
+  </div>
+
+  <!-- Item Supply Track Visualizer -->
+  <div class="setup-item-supply">
+    <h5>Shared Item Supply Pool</h5>
+    <div class="item-grid">
+      <div class="item-slot" onclick="toggleSupplyItem(this)">🥾 <span class="item-count">x2</span><small>Boot</small></div>
+      <div class="item-slot" onclick="toggleSupplyItem(this)">🥾 <span class="item-count">x2</span><small>Boot</small></div>
+      <div class="item-slot" onclick="toggleSupplyItem(this)">💼 <span class="item-count">x2</span><small>Satchel</small></div>
+      <div class="item-slot" onclick="toggleSupplyItem(this)">💼 <span class="item-count">x2</span><small>Satchel</small></div>
+      <div class="item-slot" onclick="toggleSupplyItem(this)">🏹 <span class="item-count">x1</span><small>Crossbow</small></div>
+      <div class="item-slot" onclick="toggleSupplyItem(this)">🔨 <span class="item-count">x1</span><small>Hammer</small></div>
+      <div class="item-slot" onclick="toggleSupplyItem(this)">⚔️ <span class="item-count">x2</span><small>Sword</small></div>
+      <div class="item-slot" onclick="toggleSupplyItem(this)">⚔️ <span class="item-count">x2</span><small>Sword</small></div>
+      <div class="item-slot" onclick="toggleSupplyItem(this)">☕ <span class="item-count">x2</span><small>Kettle</small></div>
+      <div class="item-slot" onclick="toggleSupplyItem(this)">☕ <span class="item-count">x2</span><small>Kettle</small></div>
+      <div class="item-slot" onclick="toggleSupplyItem(this)">🪙 <span class="item-count">x2</span><small>Coins</small></div>
+      <div class="item-slot" onclick="toggleSupplyItem(this)">🪙 <span class="item-count">x2</span><small>Coins</small></div>
+    </div>
+    <small class="setup-tip">Click an item to toggle it when crafted by a player!</small>
+  </div>
+
+  <!-- Ruins Map Visualizer -->
+  <div class="setup-ruins-box">
+    <h5>Map Ruin Slots (4 Total)</h5>
+    <div class="ruins-row">
+      <div class="ruin-token claimed" id="ruin-1" onclick="toggleRuin(1)">R</div>
+      <div class="ruin-token claimed" id="ruin-2" onclick="toggleRuin(2)">R</div>
+      <div class="ruin-token claimed" id="ruin-3" onclick="toggleRuin(3)">R</div>
+      <div class="ruin-token claimed" id="ruin-4" onclick="toggleRuin(4)">R</div>
+    </div>
+    <p id="ruins-status-text">4 Ruins remaining on map (blocks paths until explored).</p>
+  </div>
+</div>
+    </section>
+
+  
+    <section id="victory" class="rule-section">
+      <div class="card-panel">
+        <h2>Victory</h2>
+        <h3>How To Win</h3>
+        <ul>
+          <li>First to reach 30 VPs immediately wins the game.</li>
+          <li>When multiple players achieve 30 VPs simultaneously, the closest in clockwise order to the current player wins.</li>
+        </ul>
+        <h3>Scoring Victory Points</h3>
+        <ul>
+          <li><strong>Removing Buildings & Tokens</strong> - You score a VP for each one removed.</li>
+          <li><strong>Crafting Items</strong> - When you craft an item, score the VPs listed on the card.</li>
+        </ul>
+        <h3>Dominance Cards</h3>
+        <ul>
+          <li><strong>Activating:</strong>
+            <ul>
+              <li>During your Daylight, if you have at least 10 VPs, you may activate a dominance card.</li>
+              <li>Remove your score marker, as you no longer score VPs.</li>
+            </ul>
+          </li>
+          <li><strong>Mouse, Rabbit, or Fox Dominance</strong> - Win immediately if you rule 3 clearings of the matching suit at the start of your Birdsong.</li>
+          <li><strong>Bird Dominance</strong> - Win immediately if you rule 2 clearings in opposite corners at the start of your Birdsong.</li>
+        </ul>
+      </div>
+      <!-- Interactive Scoreboard & Dominance Tracker -->
+<div class="visualizer-pane" id="victory-visualizer">
+  <div class="sandbox-header">
+    <h4>Woodland VP & Dominance Tracker</h4>
+    <p>Simulate faction scoring and victory condition shifts.</p>
+  </div>
+
+  <!-- Scoreboard Track -->
+  <div class="score-tracker-card">
+    <div class="faction-score-row" id="score-row-cat">
+      <span class="score-label-name">🐱 Marquise:</span>
+      <div class="score-controls">
+        <button onclick="adjustScore('cat', -1)">-</button>
+        <span class="score-value" id="score-val-cat">0</span>
+        <button onclick="adjustScore('cat', 1)">+</button>
+      </div>
+    </div>
+
+    <div class="faction-score-row" id="score-row-eyrie">
+      <span class="score-label-name">🦅 Eyrie:</span>
+      <div class="score-controls">
+        <button onclick="adjustScore('eyrie', -1)">-</button>
+        <span class="score-value" id="score-val-eyrie">0</span>
+        <button onclick="adjustScore('eyrie', 1)">+</button>
+      </div>
+    </div>
+
+    <div class="faction-score-row" id="score-row-woodland">
+      <span class="score-label-name">🐿️ Alliance:</span>
+      <div class="score-controls">
+        <button onclick="adjustScore('woodland', -1)">-</button>
+        <span class="score-value" id="score-val-woodland">0</span>
+        <button onclick="adjustScore('woodland', 1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dominance Cards Activation Hub -->
+  <div class="dominance-activation-zone">
+    <h5>Activate Dominance Card (Req: 10+ VPs)</h5>
+    <div class="dominance-buttons-grid">
+      <button class="dom-btn fox" onclick="activateDominance('fox')">🦊 Fox Dom</button>
+      <button class="dom-btn rabbit" onclick="activateDominance('rabbit')">🐰 Rabbit Dom</button>
+      <button class="dom-btn mouse" onclick="activateDominance('mouse')">🐭 Mouse Dom</button>
+      <button class="dom-btn bird" onclick="activateDominance('bird')">🦅 Bird Dom</button>
+    </div>
+    <p id="dominance-status-msg" class="dominance-msg">No active dominance conditions.</p>
+    <button class="reset-victory-btn" onclick="resetVictoryTracker()">Reset Game State</button>
+  </div>
+</div>
+    </section>
+
+
+    <section id="actions" class="rule-section">
+      <div class="card-panel">
+        <h2>Key Actions</h2>
+        <h3>Craft</h3>
+        <ul>
+          <li><strong>Cost</strong> - To craft a card, you must activate crafting pieces of the suits listed in the card’s bottom-left corner.</li>
+          <li><strong>Immediate Effects:</strong>
+            <ul>
+              <li>Paper box means resolve its effect and discard the card.</li>
+              <li>If it shows an item, take it from the item supply on the map. If not in supply, it can’t be crafted.</li>
+            </ul>
+          </li>
+          <li><strong>Persistent Effects</strong> - Stone box is placed in your play area, providing a continuous effect.</li>
+          <li><strong>No Duplicates</strong> - Can’t craft an identical persistent effect to one already in your play area.</li>
+        </ul>
+
+        <h3>Move</h3>
+        <ul>
+          <li>Take any number of warriors/pawns from one clearing and move them along a link to an adjacent clearing.</li>
+          <li><strong>Requirement:</strong> You must rule the origin clearing, destination clearing, or both.</li>
+          <li>A piece can be moved any number of times per turn.</li>
+        </ul>
+
+        <h3>Battle</h3>
+        <ol>
+          <li><strong>Defender May Ambush:</strong> Plays matching ambush card to deal 2 immediate hits. Attacker can match it to cancel.</li>
+          <li><strong>Use Before-Roll Effects:</strong> Resolve effects that trigger before rolling.</li>
+          <li><strong>Roll Dice:</strong> Attacker takes higher roll, defender takes lower roll. Max rolled hits = number of your warriors in battle.</li>
+          <li><strong>Use After-Roll Effects:</strong> Resolve modifications to battle calculation.</li>
+          <li><strong>Count Hits:</strong> Add extra hits (e.g., +1 if defender is defenseless).</li>
+          <li><strong>Deal Hits:</strong> Remove pieces. Warriors must be removed before buildings or tokens.</li>
+        </ol>
+      </div>
+      
+      <!-- Interactive Battle Simulator -->
+<div class="visualizer-pane" id="battle-simulator">
+  <div class="sandbox-header">
+    <h4>Interactive Battle Simulator</h4>
+    <p>Simulate a battle step-by-step following the official rules.</p>
+  </div>
+
+  <!-- Step Wizard Progress Tracker -->
+  <div class="battle-steps-indicator">
+    <span class="step-dot active" id="dot-step1">1</span> →
+    <span class="step-dot" id="dot-step2">2</span> →
+    <span class="step-dot" id="dot-step3">3</span> →
+    <span class="step-dot" id="dot-step4">4</span>
+  </div>
+
+  <!-- Dynamic Step Content Window -->
+  <div class="battle-window card-panel">
+    
+    <!-- STEP 1: SETUP & AMBUSH -->
+    <div class="battle-step-pane active" id="pane-step1">
+      <h5>Step 1: Defender Ambush</h5>
+      <p>The Attacker (Marquise) attacks the Defender (Eyrie). Can the defender ambush?</p>
+      
+      <div class="battle-flex-row">
+        <div>
+          <label>Attacker Warriors: </label>
+          <input type="number" id="battle-att-warriors" value="3" min="1" max="10">
+        </div>
+        <div>
+          <label>Defender Warriors: </label>
+          <input type="number" id="battle-def-warriors" value="2" min="0" max="10">
+        </div>
+      </div>
+
+      <div class="action-buttons-group">
+        <button class="battle-btn trigger" onclick="triggerAmbush(true)">Defender Plays Ambush (-2 Attacker Warriors)</button>
+        <button class="battle-btn" onclick="goToBattleStep(2)">No Ambush / Continue</button>
+      </div>
+      <p id="ambush-status-text" class="micro-note"></p>
+    </div>
+
+    <!-- STEP 2: THE ROLL -->
+    <div class="battle-step-pane" id="pane-step2">
+      <h5>Step 2: Roll Dice</h5>
+      <p>Roll two 12-sided dice (values 0-3). The attacker takes the higher roll; the defender takes the lower roll.</p>
+      
+      <div class="dice-container">
+        <div class="die attacker-die" id="die-attack">?</div>
+        <div class="die defender-die" id="die-defend">?</div>
+      </div>
+
+      <button class="battle-btn action" onclick="rollBattleDice()">Roll Dice[cite: 1]</button>
+      <button class="battle-btn" id="btn-to-step3" onclick="goToBattleStep(3)" disabled>Proceed to Caps & Hits[cite: 1]</button>
+    </div>
+
+    <!-- STEP 3: APPLY LIMITS & COUNT HITS -->
+    <div class="battle-step-pane" id="pane-step3">
+      <h5>Step 3: Count & Limit Hits</h5>
+      <p>Maximum rolled hits cannot exceed the number of active warriors you have in the battle![cite: 1] If the defender has 0 warriors, they are <em>defenseless</em>, granting the attacker +1 extra hit.[cite: 1]</p>
+      
+      <div class="hit-calc-box">
+        <div class="calc-side">
+          <h6>Attacker (Cats)</h6>
+          <p>Raw Roll: <span id="calc-att-roll">0</span></p>
+          <p>Warrior Cap: <span id="calc-att-cap">0</span></p>
+          <p class="bonus-text" id="calc-att-bonus"></p>
+          <p class="final-hits">Final Hits: <span id="calc-att-final">0</span></p>
+        </div>
+        <div class="calc-side">
+          <h6>Defender (Birds)</h6>
+          <p>Raw Roll: <span id="calc-def-roll">0</span></p>
+          <p>Warrior Cap: <span id="calc-def-cap">0</span></p>
+          <p class="bonus-text" id="calc-def-bonus"></p>
+          <p class="final-hits">Final Hits: <span id="calc-def-final">0</span></p>
+        </div>
+      </div>
+
+      <button class="battle-btn action" onclick="calculateFinalHits()">Calculate Damage[cite: 1]</button>
+      <button class="battle-btn" id="btn-to-step4" onclick="goToBattleStep(4)" disabled>Apply Damage[cite: 1]</button>
+    </div>
+
+    <!-- STEP 4: RESOLUTION SUMMARY -->
+    <div class="battle-step-pane" id="pane-step4">
+      <h5>Step 4: Deal Hits & Clean Up</h5>
+      <p>Pieces are removed from the clearing. All warriors must be removed before buildings or tokens can be taken.[cite: 1]</p>
+      <div class="summary-banner" id="battle-summary-text"></div>
+      <button class="battle-btn action" onclick="resetBattleSimulator()">Simulate Another Battle</button>
+    </div>
+
+  </div>
+</div>
+    </section>
+
+
+
+
+
+    <!-- MARQUISE DE CAT FACTION SECTION -->
+<section id="marquise-section" class="content-section">
+  <div class="faction-header cat-banner">
+    <h2 class="black">🐱 Marquise de Cat (The Industrial Invaders)</h2>
+    <p class="faction-subtitle">Monopolize the Woodland economy through mass production, logistics, and military garrisons.</p>
+  </div>
+
+  <!-- Core Abilities & Setup Split Grid -->
+
+    <!-- Left: Passive Rules -->
+    <div class="visualizer-pane-stat text-pane">
+    <div class="border-marquise">
+      <h2 class="black">Faction Rules & Abilities</h2>
+      </div>
+      <div class="pane-body">
+      <ul class="rules-list">
+        <li><strong>The Keep:</strong> Only you can place pieces in the clearing with your Keep token. Enemy pieces can never be placed there. If destroyed, it is gone forever!</li>
+        <li><strong>Field Hospitals:</strong> Whenever your warriors are removed from a clearing, spend a card matching that clearing's suit to immediately respawn them safely back at the Keep instead of the supply pool.</li>
+        <li><strong>Crafting Engine:</strong> You craft cards during Daylight by activating your built Workshops matching the required clearing suits.</li>
+      </ul>
+    </div>
+      </div>
+
+
+    <!-- Right: Map Setup Sequence -->
+    <div class="visualizer-pane-stat text-pane">
+      <div class="border-marquise">
+      <h2 class="black">Faction Setup</h2>
+      </div>
+      <div class="pane-body">
+      <ol class="setup-steps-list">
+        <li><strong>Form Pools:</strong> Gather 25 warriors and 8 wood tokens into your faction supply.</li>
+        <li><strong>Place the Keep:</strong> Place your Keep token in any one of the 4 corner clearings. This serves as your primary stronghold.</li>
+        <li><strong>Garrison the Woodland:</strong> Place exactly 1 warrior in every single clearing on the board except the clearing diagonally opposite your Keep.</li>
+        <li><strong>Deploy Infrastructure:</strong> Place 1 Sawmill, 1 Workshop, and 1 Recruiter among your Keep clearing and any adjacent clearings in any combination.</li>
+        <li><strong>Fill the Board Tracks:</strong> Place your remaining 5 Sawmills, 5 Workshops, and 5 Recruiters onto their respective faction board tracks from right to left.</li>
+      </ol>
+    </div>
+    </div>
+
+
+  <!-- INTERACTIVE PASSIVE MECHANIC SIMULATOR -->
+  <div class="visualizer-pane-stat interactive-full-width">
+    <div class="sandbox-header">
+      <div class="border-marquise">
+      <h2 class="black">Field Hospitals & Keep Respawn Simulator</h2>
+      </div>
+  <div class="pane-body">
+      <p>Simulate defending your armies and rescuing casualties with cards.</p>
+    </div>
+    <div class="hospital-simulator-box">
+      <div class="hospital-control-panel">
+        <label>Defeated Cat Warriors:</label>
+        <div class="counter-row">
+          <button onclick="adjustCasualties(-1)">-</button>
+          <span id="casualty-count">3</span>
+          <button onclick="adjustCasualties(1)">+</button>
+        </div>
+
+        <label>Select Matching Clearing Card:</label>
+        <select id="hospital-card-suit">
+          <option value="fox">🦊 Fox Card</option>
+          <option value="rabbit">🐰 Rabbit Card</option>
+          <option value="mouse">🐭 Mouse Card</option>
+          <option value="bird">🦅 Bird Card (Wildcard)</option>
+        </select>
+
+        <button class="battle-btn action" style="width:100%; margin-top:1rem;" onclick="triggerFieldHospitals()">Trigger Field Hospitals</button>
+      </div>
+
+      <!-- Keep Visual Area -->
+      <div class="keep-zone-display">
+        <div class="keep-token-badge">THE KEEP</div>
+        <div id="keep-warriors-pool" class="keep-pool-grid">
+          <!-- Starting warriors inside the Keep -->
+          <div class="piece-dot cat-warrior"></div>
+          <div class="piece-dot cat-warrior"></div>
+        </div>
+      </div>
+    </div>
+    <p id="hospital-log" class="micro-note" style="text-align:center; color:#527a2b; font-weight:bold;"></p>
+  </div>
+  </div>
+
+
+  <!-- Turn Phases Progression Table -->
+  <div class="visualizer-pane-stat text-pane">
+    <div class="border-marquise">
+    <h2 class="black"> Turn Phases & Action Economy</h2>
+    </div>
+
+  <div class="pane-body">
+    <div class="phase-container-mq">
+      <span class="phase-badge birdsong-badge">Birdsong</span>
+      <p><strong>Logistics:</strong> Place exactly 1 wood token next to each active Sawmill currently built on the map.</p>
+    </div>
+
+    <div class="phase-container-mq">
+      <span class="phase-badge daylight-badge">Daylight</span>
+      <p>Activate workshops to craft cards first. Then you get <strong>3 Actions</strong> baseline. You can gain +1 extra action per Bird Card you discard from your hand.</p>
+      
+      <table class="mechanics-table">
+        <thead>
+          <tr>
+            <td><strong>Action</strong></td>
+            <td><strong>Mechanic Execution Rules</strong></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Battle</strong></td>
+            <td>Initiate a battle in a clearing you occupy.</td>
+          </tr>
+          <tr>
+            <td><strong>March</strong></td>
+            <td>Perform up to 2 separate movement iterations across clearing paths.</td>
+          </tr>
+          <tr>
+            <td><strong>Recruit</strong></td>
+            <td>Place 1 warrior at every Recruiter built on the map (Limit: Once per turn).</td>
+          </tr>
+          <tr>
+            <td><strong>Build</strong></td>
+            <td>Place a building in a clearing you Rule that connects adjacent to your network. Take the leftmost building from your board track, pay its wood cost by removing wood from any connected clearings you rule, and score the uncovered VPs.</td>
+          </tr>
+          <tr>
+            <td><strong>Overwork</strong></td>
+            <td>Spend a card matching a Sawmill's clearing suit to instantly spawn 1 extra wood token directly at that Sawmill.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="phase-container-mq">
+      <span class="phase-badge evening-badge">Evening</span>
+      <p>Draw 1 card baseline, plus an additional card per uncovered draw bonus node on your Recruiter track. If your hand exceeds 5 cards, discard down to 5.</p>
+    </div>
+  </div>
+  </div>
+
+
+
+  <!-- Strategic Outlook Evaluation -->
+    <div class="visualizer-pane-stat strategy-box strength">
+      <div class="border-marquise">
+      <h2 class="black">Strategic Strengths</h2>
+      </div>
+
+
+  <div class="pane-body">
+      <ul>
+        <li>Starts the game in absolute control of almost the entire map.</li>
+        <li>High early-game score potential due to incredibly cheap initial buildings.</li>
+        <li>Perfect candidates for Dominance Cards because they already start ruling the clearing counts.</li>
+      </ul>
+    </div>
+  </div>
+    <div class="visualizer-pane-stat strategy-box weakness">
+      <div class="border-marquise">
+      <h2 class="black">Critical Weaknesses</h2>
+      </div>
+    <div class="pane-body">
+      <ul>
+        <li>Natural target for all other players from turn one due to their board presence.</li>
+        <li>VP generation falls off drastically late-game as building costs escalate.</li>
+        <li>If the Keep token is destroyed, recovering is near impossible.</li>
+        <li>Losing Sawmills paralyzes the entire wood supply line economy.</li>
+      </ul>
+    </div>
+    </div>
+  
+</section>
+
+
+
+
+
+
+<!-- EYRIE DYNASTIES FACTION SECTION -->
+<section id="eyrie-section" class="content-section">
+  <div class="faction-header bird-banner">
+    <h2 class="black">🦅 Eyrie Dynasties (The Fractured Nobility)</h2>
+    <p class="faction-subtitle">Reclaim the ancient forest canopy by programming an escalating chain of political commands.</p>
+  </div>
+
+    <div class="visualizer-pane-stat text-pane">
+      <div class="border-eyrie">
+      <h2 class="black">Faction Rules & Abilities</h2>
+      </div>
+    <div class="pane-body">
+      <ul class="rules-list">
+        <li><strong>Lords of the Forest:</strong> You rule a clearing whenever you are tied for total presence (warriors + buildings), provided you have at least 1 piece there.</li>
+        <li><strong>Disdain for Trade:</strong> Whenever you craft an item card, ignore the printed victory points and score exactly 1 VP instead (unless led by the Builder).</li>
+        <li><strong>Crafting:</strong> Craft before resolving the Decree during Daylight by activating roosts.</li>
+      </ul>
+    </div>
+    </div>
+
+    <div class="visualizer-pane-stat text-pane">
+      <div class="border-eyrie">
+      <h2 class="black">Faction Setup</h2>
+      </div>
+    <div class="pane-body">
+      <ol class="setup-steps-list">
+        <li><strong>Gather Warriors:</strong> Collect your 20 warriors.</li>
+        <li><strong>Place Roost & Starting Warriors:</strong> Place 1 Roost and 6 warriors in a corner clearing (diagonally opposite the Cat Keep if possible).</li>
+        <li><strong>Appoint Leader:</strong> Select an active Leader card. Take your 2 Loyal Vizier cards (Wildcard Birds) and tuck them into the starting columns specified by that leader.</li>
+        <li><strong>Tuck Viziers:</strong> Tuck your 2 Loyal Vizier cards, showing their suit, into the Decree columns above your faction board as listed on your leader.</li>
+        <li><strong>Fill Roosts Track:</strong> Place your 6 remaining roosts on your roost track from right to left.</li>
+      </ol>
+    </div>
+    </div>
+
+
+  <!-- Turn Phases Progression Table -->
+  <div class="visualizer-pane-stat text-pane">
+    <div class="border-eyrie">
+    <h2 class="black"> Turn Phases & Action Economy</h2>
+    </div>
+
+  <div class="pane-body">
+    <div class="phase-container-ed">
+      <span class="phase-badge birdsong-badge">Birdsong</span>
+      <p><strong>Emergency Orders: </strong> If you have no cards in your hand, draw one card.</p>
+      <p><strong>Add to the Decree: </strong> Add one or two cards to the decree, revealing them from your hand and tucking them (Only one card can be bird each turn).</p>
+      <p><strong>A New Roost: </strong> If you have no roosts on the map, place a roost and 3 warriors in a clearing with the fewest warriors where all those pieces can be placed.</p>
+    </div>
+
+    <div class="phase-container-ed">
+      <span class="phase-badge daylight-badge">Daylight</span>
+      <table class="mechanics-table">
+        <thead>
+          <tr>
+            <td><strong>Action</strong></td>
+            <td><strong>Mechanic Execution Rules</strong></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Craft</strong></td>
+            <td>You may activate roosts to craft cards from your hand.</td>
+          </tr>
+          <tr>
+            <td><strong>Resolve the Decree</strong></td>
+            <td>Must resolve the decree, starting with the leftmost column and moving right. In each column, you must resolve all of its cards, but in any order. (If any actions are failed, you fall into turmoil)</td>
+          </tr>
+          <tr>
+            <td><strong>Recruit</strong></td>
+            <td>Place a warrior in any clearing with a roost whose suit matches the card suit.</td>
+          </tr>
+          <tr>
+            <td><strong>Move</strong></td>
+            <td>Move from any clearing whose suit matches the card suit.</td>
+          </tr>
+          <tr>
+            <td><strong>Battle</strong></td>
+            <td>Initiate a battle in any clearing whose suit matches the card suit.</td>
+          </tr>
+          <tr>
+            <td><strong>Build</strong></td>
+            <td>Place a roost in any clearing you rule whose suit matches the card suit and which has no roost.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="phase-container-ed">
+      <span class="phase-badge evening-badge">Evening</span>
+      <p><strong>Score Points: </strong> Score the victory points listed on the rightmost empty space of your roosts track.</p>
+      <p><strong>Draw and Discard: </strong> Draw 1 card + 1 card per uncovered draw bonus. If your hand exceeds 5 cards, discard down to 5.</p>
+    </div>
+  </div>
+  </div>
+
+
+    <div class="visualizer-pane-stat text-pane">
+      <div class="border-eyrie">
+      <h2 class="black">Turmoil</h2>
+      </div>
+    <div class="pane-body">
+      <ol class="setup-steps-list">
+        <li><strong>Humiliate:</strong> Lose 1 VP per bird card (including Loyal Viziers) on the Decree.</li>
+        <li><strong>Purge:</strong> Discard all of the cards on the Decree except your Loyal Viziers.</li>
+        <li><strong>Depose:</strong> Flip your current leader face down and set it aside, choose a new leader from those face up, and place on your faction board. Tuck your Loyal Viziers into the Decree spaces listed on your new leader. If you must choose a new leader but none are face up, flip them all face up.</li>
+        <li><strong>Rest:</strong> End Daylight and begin Evening.</li>
+      </ol>
+    </div>
+    </div>
+
+
+
+  <!-- INTERACTIVE LEADER & DECREE CALCULATOR -->
+  <div class="visualizer-pane-stat interactive-full-width">
+    <div class="sandbox-header">
+      <div class="border-eyrie">
+      <h2 class="black">The Decree Programming & Turmoil Engine</h2>
+      </div>
+  <div class="pane-body">
+      <p>Select your Dynasty Leader to seed your starting Viziers, stack matching cards, and calculate the cost of a political breakdown.</p>
+    </div>
+    
+    <div class="decree-simulator-layout">
+      <div class="decree-controls">
+        <label>1. Select Regime Leader:</label>
+        <select id="eyrie-leader-select" onchange="changeEyrieLeader()">
+          <option value="charismatic">🦅 Charismatic (Viziers: Recruit / Battle)</option>
+          <option value="builder">👷 Builder (Viziers: Recruit / Move)</option>
+          <option value="commander">⚔️ Commander (Viziers: Move / Battle)</option>
+          <option value="despot">🏰 Despot (Viziers: Move / Build)</option>
+        </select>
+        <div id="leader-passive-callout" class="micro-note" style="color:#2f7ca5; font-weight:bold; margin-bottom:0.5rem;">Passive: Recruit 2 warriors instead of 1.</div>
+
+        <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 0.5rem 0;">
+
+        <label>2. Add Cards to Political Decree:</label>
+        <select id="decree-card-suit">
+          <option value="fox">🦊 Fox Card</option>
+          <option value="rabbit">🐰 Rabbit Card</option>
+          <option value="mouse">🐭 Mouse Card</option>
+          <option value="bird">🦅 Bird Card (Wild/Vizier)</option>
+        </select>
+
+        <div class="decree-button-row">
+          <button class="decree-add-btn" onclick="addCardToDecree('recruit')">+ Recruit</button>
+          <button class="decree-add-btn" onclick="addCardToDecree('move')">+ Move</button>
+          <button class="decree-add-btn" onclick="addCardToDecree('battle')">+ Battle</button>
+          <button class="decree-add-btn" onclick="addCardToDecree('build')">+ Build</button>
+        </div>
+
+        <div class="action-system-buttons" style="margin-top:1rem;">
+          <button class="battle-btn simulation" style="background-color: #2f7ca5; width:100%;" onclick="resolveDecree()">Execute Decree Turn</button>
+          <button class="battle-btn action" style="background-color: #a13b2d; width:100%;" onclick="triggerTurmoil()">Fail Instruction (TURMOIL!)</button>
+        </div>
+      </div>
+
+      <div class="decree-board-display">
+        <div class="decree-column" id="col-recruit"><div class="column-title">RECRUIT</div><div class="card-slot-container" id="slot-recruit"></div></div>
+        <div class="decree-column" id="col-move"><div class="column-title">MOVE</div><div class="card-slot-container" id="slot-move"></div></div>
+        <div class="decree-column" id="col-battle"><div class="column-title">BATTLE</div><div class="card-slot-container" id="slot-battle"></div></div>
+        <div class="decree-column" id="col-build"><div class="column-title">BUILD</div><div class="card-slot-container" id="slot-build"></div></div>
+      </div>
+    </div>
+    <p id="decree-log" class="micro-note-log"></p>
+  </div>
+  </div>
+
+
+
+  <!-- Detailed Reference Data Tables -->
+   
+  <div class="visualizer-pane-stat text-pane">
+    <div class="border-eyrie">
+    <h2 class="black">Leader Reference Index</h2>
+    </div>
+
+  <div class="pane-body">
+    <table class="mechanics-table">
+      <div class="table-expansion">
+      <thead>
+        <tr>
+          <td><strong>Leader Type</strong></td>
+          <td><strong>Starting Vizier Layout</strong></td>
+          <td><strong>Regime Passive Ability Modifiers</strong></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Charismatic</strong></td>
+          <td>Recruit & Battle</td>
+          <td>When taking a Recruit action, you must place 2 warriors instead of 1.</td>
+        </tr>
+        <tr>
+          <td><strong>Builder</strong></td>
+          <td>Recruit & Move</td>
+          <td>Whenever you craft, you entirely ignore your Disdain for Trade penalty (score normal card VPs).</td>
+        </tr>
+        <tr>
+          <td><strong>Commander</strong></td>
+          <td>Move & Battle</td>
+          <td>In battle as an attacker, you automatically deal an extra +1 hit.</td>
+        </tr>
+        <tr>
+          <td><strong>Despot</strong></td>
+          <td>Move & Build</td>
+          <td>Whenever you remove at least 1 enemy building or token in battle, score +1 extra bonus VP.</td>
+        </tr>
+      </tbody>
+      </div>
+    </table>
+  </div>
+  </div>
+
+
+  <!-- Strategic Outlook Evaluation -->
+ 
+    <div class="visualizer-pane-stat strategy-box strength">
+      <div class="border-eyrie">
+      <h2 class="black">Strategic Strengths</h2>
+      </div>
+
+
+    <div class="pane-body">
+      <ul>
+        <li>If you build your roosts quickly, you are unstoppable.</li>
+        <li>Lords of the Forest ability makes it easy to own the map.</li>
+        <li>More cards in the Decree means quicker games.</li>
+      </ul>
+    </div>
+    </div>
+
+  
+    <div class="visualizer-pane-stat strategy-box weakness">
+      <div class="border-eyrie">
+      <h2 class="black">Critical Weaknesses</h2>
+      </div>
+      <div class="pane-body">
+      <ul>
+        <li>Roosts can be targeted and end your game.</li>
+        <li>Turmoil can end good runs.</li>
+        <li>Bad RNG can lead to Turmoil.</li>
+      </ul>
+      </div>
+    </div>
+
+
+</section>
+
+
+
+
+
+
+<!-- WOODLAND ALLIANCE FACTION SECTION -->
+<!-- UPDATED WOODLAND ALLIANCE FACTION SECTION -->
+<section id="alliance-section" class="content-section">
+  <div class="faction-header alliance-banner">
+    <h2 class="black">🦡 Woodland Alliance (The Guerrilla Insurgency)</h2>
+    <p class="faction-subtitle">Stoke the flames of rebellion from the shadows, spread sympathy, and overthrow ruling empires.</p>
+  </div>
+
+  
+    <div class="visualizer-pane-stat text-pane">
+      <div class="border-woodland">
+      <h2 class="black">Faction Rules & Abilities</h2>
+      </div>
+
+      <div class="pane-body">
+      <ul class="rules-list">
+        <li><strong>Guerrilla War:</strong> As the defender in battle, you deal hits equal to the higher roll, and the attacker deals hits equal to the lower roll.</li>
+        <li><strong>The Supporters Stack Rule:</strong> Supporters are kept face down and don't count against your main hand size limit. 
+          <span style="color:#a13b2d; font-weight:bold;">If you have NO bases on the board, your stack is strictly capped at a maximum of 5 cards!</span> Additional incoming cards are discarded.
+        </li>
+        <li><strong>Outrage Tracking:</strong> Whenever an opponent moves units into your sympathetic clearing or destroys a token, they must hand a matching card from their hand directly into your Supporters Stack.</li>
+      </ul>
+      </div>
+    </div>
+  
+
+    <div class="visualizer-pane-stat text-pane">
+      <div class="border-woodland">
+      <h2 class="black">Faction Setup</h2>
+      </div>
+
+      <div class="pane-body">
+      <ol class="rules-list">
+        <li><strong>Gather Warriors:</strong> Form a supply of 10 warriors.</li>
+        <li><strong>Place Bases:</strong> Place 3 bases on the respective spaces in your bases box.</li> 
+        <li><strong>Fill Sympathy Track:</strong> Place 10 sympathy tokens on your Sympathy track.</li>
+        <li><strong>Gain Supporters:</strong> Draw 3 cards and place them face down on your Supporters stack.</li>
+      </ol>
+      </div>
+    </div>
+
+
+
+
+        <div class="visualizer-pane-stat text-pane">
+      <div class="border-woodland">
+      <h2 class="black">Removing Bases Penalty</h2>
+      </div>
+
+      <div class="pane-body">
+        <p><strong>Martyrdom Costs:</strong> If an established faction base is wiped off the map, you must instantly:</p>
+        <ul class="rules-list">
+          <li>Discard all supporters matching that clearing's suit (including all Bird wildcards).</li>
+          <li>Remove half of your trained Officers pool (rounded up).</li>
+          <li>If no bases remain, immediately discard down to the 5-card maximum storage cap!</li>
+        </ul>
+      </div>
+    </div>
+
+
+
+  <div class="visualizer-pane-stat text-pane">
+    <div class="border-woodland">
+    <h2 class="black"> Turn Phases & Action Economy</h2>
+    </div>
+
+  <div class="pane-body">
+    <div class="phase-container-wa">
+      <span class="phase-badge birdsong-badge">Birdsong</span>
+      <p><strong>Revolt (Any number of times):</strong> If you have no cards in your hand, draw one card.</p>
+      <ol>
+        <li><strong>Choose Clearing:</strong> Choose a sympathetic clearing without a base that matches a base on your faction board</li>
+        <li><strong>Spend Supporters:</strong> Spend 2 supporters matching the suit of the chosen clearing</li>
+        <li><strong>Resolve Effects:</strong> Remove all enemy pieces from the chosen clearing. Place the matching base there, and place warriors there equal to the number of sympathetic clearings matching the base’s printed suit. Place one warrior in the Officers box.</li>
+      </ol>
+      <p><strong>Spread Sympathy (Any number of times):</strong></p>
+      <ol>
+        <li><strong>Choose Clearing:</strong> Choose an unsympathetic clearing adjacent to a sympathetic clearing. If there are no sympathetic clearings, you may choose any clearing.</li>
+        <li><strong>Spend Supporters:</strong> Spend supporters matching the suit of the chosen clearing. The number of supporters that must be spent is listed above the sympathy token. You must spend another matching supporter if the target clearing has at least 3 warriors of another player, including warriors they are treating as their own for rule.</li>
+        <li><strong>Place and Score:</strong> Place a sympathy token in the chosen clearing. Score the VP on the space uncovered on your faction board.</li>
+      </ol>
+    </div>
+
+    <div class="phase-container-wa">
+      <span class="phase-badge daylight-badge">Daylight</span>
+      <table class="mechanics-table">
+        <thead>
+          <tr>
+            <td><strong>Action</strong></td>
+            <td><strong>Mechanic Execution Rules</strong></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Craft</strong></td>
+            <td>You may activate sympathy tokens to craft a card from your hand.</td>
+          </tr>
+          <tr>
+            <td><strong>Mobilize</strong></td>
+            <td>Add a card from your hand to the Supporters stack</td>
+          </tr>
+          <tr>
+            <td><strong>Train</strong></td>
+            <td>Spend a card whose suit matches the clearing of a base on the map to place a warrior in the Officers box.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="phase-container-wa">
+      <span class="phase-badge evening-badge">Evening</span>
+      <p><strong>Military Operations:</strong> Take actions as follows, up to your number of officers, in any order and number.</p>
+      <ol>
+        <li><strong>Move:</strong> Take one move</li>
+        <li><strong>Battle:</strong> Initiate a battle</li>
+        <li><strong>Recruit:</strong> Place a warrior in any clearing with a base</li>
+        <li><strong>Organize:</strong> Remove one Alliance warrior from an unsympathetic clearing to place a sympathy token there, then score the VPs listed on the space uncovered on your board</li>
+      </ol>
+      <p><strong>Draw and Discard: </strong> Draw 1 card + 1 card per uncovered draw bonus. If your hand exceeds 5 cards, discard down to 5.</p>
+    </div>
+  </div>
+  </div>
+    </div>
+
+
+
+
+  <!-- INTERACTIVE SYMPATHY & CAP RATIO ENGINE -->
+  <div class="visualizer-pane-stat interactive-full-width">
+    <div class="sandbox-header">
+      <div class="border-woodland">
+      <h2 class="black">The Insurgency Logistics & Cap Calculator</h2>
+      </div>
+  <div class="pane-body">
+      <p>Simulate mobilizing cards into your stack. Toggle your operational base status to see how your maximum storage threshold shifts.</p>
+    </div>
+    
+    <div class="insurgency-simulator-box">
+      <div class="insurgency-controls">
+        <div class="stack-badge-counter">
+          Supporters Stack: <span id="ui-supporter-count">3</span> / <span id="ui-max-cap">5</span> Cards
+        </div>
+
+        <label>Operational Bases Built:</label>
+        <select id="alliance-base-status" onchange="toggleBaseInfrastructure()">
+          <option value="none">❌ Zero Active Bases (Strict 5-Card Cap)</option>
+          <option value="active">🏰 Active Bases Established (Unlimited Stack Capacity)</option>
+        </select>
+        
+        <button class="battle-btn simulation" style="background-color: #558b2f; width:100%; margin-top:0.5rem;" onclick="generateSupporter()">Gather 1 Supporter</button>
+
+        <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 0.75rem 0;">
+
+        <label>Spread Sympathy Target:</label>
+        <select id="sympathy-suit-select">
+          <option value="fox">🦊 Fox Clearing (Cost: 1 Supporter)</option>
+          <option value="rabbit">🐰 Rabbit Clearing (Cost: 1 Supporter)</option>
+          <option value="mouse">🐭 Mouse Clearing (Cost: 1 Supporter)</option>
+        </select>
+        
+        <button class="battle-btn action" style="background-color: #85b15b; width:100%;" onclick="spreadSympathy()">Spread Sympathy</button>
+      </div>
+
+      <div class="map-simulation-display">
+        <div class="sympathy-track-header">Active Sympathetic Cells</div>
+        <div id="sympathy-tokens-grid" class="sympathy-tokens-grid"></div>
+      </div>
+    </div>
+    <p id="insurgency-log" class="micro-note-insurgency-log"></p>
+  </div>
+  </div>
+
+
+  <!-- Strategic Outlook Evaluation -->
+ 
+    <div class="visualizer-pane-stat strategy-box strength">
+      <div class="border-woodland">
+      <h2 class="black">Strategic Strengths</h2>
+      </div>
+
+
+    <div class="pane-body">
+      <ul>
+        <li>Officers allow lots of actions in a single turn.</li>
+        <li>Sympathy is their best friend.</li>
+        <li>Revolt can ruin opponents and score VPs.</li>
+      </ul>
+    </div>
+    </div>
+
+  
+    <div class="visualizer-pane-stat strategy-box weakness">
+      <div class="border-woodland">
+      <h2 class="black">Critical Weaknesses</h2>
+      </div>
+      <div class="pane-body">
+      <ul>
+        <li>If a base is destroyed, they are screwed.</li>
+        <li>Can be trapped in a corner and never start.</li>
+        <li>Difficult to learn.</li>
+        <li>Limited Troops.</li>
+      </ul>
+      </div>
+    </div>
+
+</section>
+
+
+
+
+
+
+<!-- VAGABOND FACTION SECTION -->
+<section id="vagabond-section" class="content-section">
+  <div class="faction-header vagabond-banner">
+    <h2 class="black">🦝 The Vagabond (The Lone Wanderer)</h2>
+    <p class="faction-subtitle">Navigate the Woodland conflicts as a solitary rogue, trading items, running quests, or forming secret coalitions.</p>
+  </div>
+
+  <!-- Core Abilities Split Grid -->
+
+    <div class="visualizer-pane-stat text-pane">
+      <div class="border-vagabond">
+      <h2 class="black">Faction Rules & Abilities</h2>
+      </div>
+
+      <div class="pane-body">
+      <ul class="rules-list">
+        <li><strong>Lone Wanderer:</strong> Your pawn is not a warrior. You cannot rule clearings, you cannot block others from ruling, and you can never be removed from the map.</li>
+        <li><strong>Nimble & Slip:</strong> You can move freely regardless of who rules the origin or destination clearing. During Birdsong, your Slip let's you move 1 adjacent space or deep into a forest completely for free.</li>
+        <li><strong>Defenseless:</strong> If you are targeted in a battle and have zero undamaged Swords face up or face down in your inventory, you are defenseless and take an extra hit.</li>
+        <li><strong>Coalitions:</strong> You cannot win via standard Dominance card rule checks. Instead, in 4+ player games, you can activate a Dominance card to tether your score marker to the player with the lowest VPs. You discard your point pool, and if they win, you share the victory!</li>
+        <li><strong>Crafting:</strong> Exhaust a hammer to activate its pawn as a crafting piece, ignoring the once-per-turn limit.</li>
+        <li><strong>Maximum Rolled Hits:</strong> In battle, the Vagabond’s max rolled hits equals to his undamaged sword, face up or face down, in his Satchel.</li>
+        <li><strong>Taking Hits:</strong> For every hit you take in battle, you must select one undamaged item and move it to the Damaged Box.</li>
+        <li><strong>Capacity Constraints:</strong> In Evening, you must permanently destroy items that exceed your satchel limit (calculated as 6 items base +2 items per face-up Satchel on your track).</li>
+        <li><strong>Forest Movement:</strong> Your Slip allows you to move in and out of forests. Other Move actions only let you move out of a forest into an adjacent clearing, not into a forest.</li>
+        <li><strong>Relationships:</strong> Your faction board shows a Relationships chart, which has 4 spaces on the Allied track and 1 Hostile box.</li>
+          <ol>
+          <li><strong>Improving Relationships:</strong> Improve a relationship with a non-Hostile faction by taking the Aid action. Aid a non-Hostile faction the number of times listed between their current Allied space and their next Allied space during the same turn.</li> 
+          <p>A given Aid action counts toward only one improvement in relationship. Advance that faction’s relationship marker one space right on the track. Score the VPs listed in the new space.</p>
+          <li><strong>Allied Status:</strong> If a relationship marker reaches the final space on the Allied track, you’re now allied with the faction shown by that relationship marker. Each time you Aid an Allied faction, score 2 VPs. When you move, you may force warriors of one Allied faction to move along with your Vagabond pawn to your destination clearing. When you move alone, such as with the Harrier’s ability, you can’t move Allied warriors.</li>
+          <p>At the start of battle as the attacker, you may treat the warriors of one Allied faction in the clearing of battle as your own. The max hits you can roll equals the number of their warriors there + your total undamaged swords. You can’t treat Allied warriors as your own when attacking the same Allied faction.</p>
+          <p>In a battle where you treat Allied warriors as your own, you can take hits by removing them. However, if you take more hits by removing Allied warriors than by damaging items during the same battle, that Allied faction becomes Hostile at the end of the battle. This rule overrides the condition for becoming Hostile.</p>
+          
+          <li><strong>Hostile Status:</strong> If you remove a warrior of a non-Hostile faction, move their relationship marker to the Hostile box. Then, if this happened in battle during your turn, check for Infamy scoring (+1 VP for each piece of a Hostile faction you remove in battle during your turn, except the warrior that made the faction Hostile).</li>
+          <p>You must exhaust an extra boot to move into a clearing with any warriors of any Hostile faction. You can’t move a relationship marker out of the Hostile box by using Aid, but you can still Aid a Hostile faction to take crafted items. You can form a coalition with a Hostile faction. If you do, move their relationship marker to the Indifferent space.</p>
+        </ol>
+      </ul>
+      </div>
+    </div>
+
+
+  
+    <div class="visualizer-pane-stat text-pane">
+      <div class="border-vagabond">
+      <h2 class="black">Faction Setup</h2>
+      </div>
+
+      <div class="pane-body">
+      <ol class="rules-list">
+        <li><strong>Choose Character:</strong> Choose a character card and place it in your Character Card slot.</li>
+        <li><strong>Place Pawn:</strong> Place your Vagabond pawn in any forest.</li> 
+        <li><strong>Get Quests:</strong> Shuffle your quest deck, draw 3 quest cards, and place them face up near you.</li>
+        <li><strong>Populate Ruins:</strong> Take the 4 ruins from the map, and take the satchel, boot, hammer, and sword items marked with an “R”. Place 1 beneath each ruin and then shuffle each ruin stack. Then, return each stack to an empty ruin slot on the map.</li>
+        <li><strong>Take Starting Items:</strong> Take the items marked with an “S” listed on your character card. Place any listed kettle, stack of coins, and satchel items face up on the respective tracks of your faction board. Place all other listed items face up in your Satchel. Return any remaining “S” items to the box.</li> 
+        <li><strong>Set Relationships:</strong> Take a relationship marker for each non-Vagabond faction and place them all on the Indifferent space of your Relationships chart.</li> 
+      </ol>
+      </div>
+    </div>
+
+
+
+
+    <!-- Action Array Reference Table -->
+
+    <div class="visualizer-pane-stat text-pane">
+    <div class="border-vagabond">
+    <h2 class="black"> Turn Phases & Action Economy</h2>
+    </div>
+
+  <div class="pane-body">
+    <div class="phase-container-vb">
+      <span class="phase-badge birdsong-badge">Birdsong</span>
+      <p><strong>Refresh:</strong> Flip 2 exhausted items face up for each kettle face up on the Refresh track, not counting the kettle that you flip face up in this step. Then flip up 3 more exhausted items.</p>
+      <p><strong>Slip:</strong> You may move into an adjacent clearing or forest without exhausting any boots, even for moving into a Hostile clearing. This move ignores all effects that prevent movement out of a clearing.</p>
+    </div>
+
+    <div class="phase-container-vb">
+      <span class="phase-badge daylight-badge">Daylight</span>
+      <p>Take these actions in any order and number:</p>
+      <table class="mechanics-table">
+        <thead>
+          <tr>
+            <td><strong>Action</strong></td>
+            <td><strong>Mechanic Execution Rules</strong></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Move</strong></td>
+            <td> Exhaust one boot to move. Exhaust an extra boot if the destination has Hostile warriors. You can’t move into a forest. If in a forest, you may only move into an adjacent clearing.</td>
+          </tr>
+          <tr>
+            <td><strong>Battle</strong></td>
+            <td> Exhaust 1 sword to initiate a battle. Check your relationship with the defender.</td>
+          </tr>
+          <tr>
+            <td><strong>Explore</strong></td>
+            <td> Exhaust 1 torch to take one item under a ruin in your clearing, reveal it, and place it face up in your Satchel or on its respective track. If you take an item, score 1 VP. If you remove the last item from a ruin, remove the ruin.</td>
+          </tr>
+          <tr>
+            <td><strong>Aid</strong></td>
+            <td> Exhaust any 1 item and give a card matching your clearing to a player with faction pieces there (even Hostile). If you do, you may take 1 item, if any, from their Crafted Items box, and place it face up in your Satchel or on its matching track. Check your relationship with their faction.</td>
+          </tr>
+          <tr>
+            <td><strong>Quest</strong></td>
+            <td> Choose a quest whose suit matches your clearing, and exhaust the 2 items listed on the quest. Place the quest in your play area as a completed quest. Then, you may either score 1 VP per matching completed quest (including this) or draw 2 cards from the deck. Finally, draw a new quest and place it near the map.</td>
+          </tr>
+          <tr>
+            <td><strong>Strike</strong></td>
+            <td> Exhaust 1 crossbow to remove an enemy warrior from your clearing. If that enemy has no warriors there, you may instead remove one of their other faction pieces there. Check your relationship with that player’s faction.</td>
+          </tr>
+          <tr>
+            <td><strong>Repair</strong></td>
+            <td> Exhaust 1 hammer to move one damaged item to the Satchel, keeping the item on its current side. Face-up stack of coins, kettles, and satchels immediately move to their tracks.</td>
+          </tr>
+          <tr>
+            <td><strong>Craft</strong></td>
+            <td> Craft a card by exhausting 1 hammer per crafting icon it has. Your clearing must match all of the card’s crafting icons. If you craft an item, place it in your Satchel or its respective track.</td>
+          </tr>
+          <tr>
+            <td><strong>Special Action</strong></td>
+            <td> Take the action listed on your character card by exhausting any items it lists.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="phase-container-vb">
+      <span class="phase-badge evening-badge">Evening</span>
+      <p><strong>Rest:</strong> If you are in a forest, move all damaged items to your Satchel and flip them face up. Face-up stack of coins, kettles, and satchels immediately move to their tracks.</p>
+      <p><strong>Draw Cards:</strong> Draw 1 card + 1 card per stack of coins face up on the respective track.</p>
+      <p><strong>Discard Cards:</strong> If your hand exceeds 5 cards, discard down to 5.</p>
+      <p><strong>Check Item Capacity:</strong> If you have more items total in your Satchel and Damaged box than your item limit (6 + 2 per satchel face up on the respective track), remove items from your Satchel and Damaged box until you have items equal to your item limit, and remove them from the game permanently.</p>
+    </div>
+  </div>
+  </div>
+    </div>
+
+
+
+
+  <!-- INTERACTIVE SATCHEL & DAMAGE ENGINE -->
+  <div class="visualizer-pane-stat interactive-full-width">
+    <div class="sandbox-header">
+      <div class="border-vagabond">
+      <h2 class="black">Satchel Inventory & Combat Damage Calculator</h2>
+      </div>
+  <div class="pane-body">
+      <p>Simulate exhausting items to complete actions, and watch how incoming battle damage dynamically breaks your equipment pool.</p>
+      <ul>
+       <li>Items on the Vagabond’s faction board can be face up or face down</li>
+       <li>The Vagabond exhausts face-up undamaged items, flipping them face down, to take many actions</li> 
+       <li>Whenever a kettle, stack of coins, or satchel is face up in your Satchel, place it in an empty matching track space if able</li> 
+       <li>If those previously mentioned are faced down, place it in your Satchel</li> 
+       <li>Each track can only hold 3 items of its type</li> 
+       <li>When gained boots, sword, crossbow, torch, and hammer are placed face up in the Vagabond’s Satchel</li>  
+      </ul>
+    </div>
+    
+    <div class="satchel-simulator-layout">
+      <!-- Controls Panel -->
+      <div class="satchel-controls">
+        <label>1. Item Inventory Utility:</label>
+        <div class="decree-button-row">
+          <button class="decree-add-btn" onclick="useVagabondItem('boot')">🥾 Exhaust Boot</button>
+          <button class="decree-add-btn" onclick="useVagabondItem('sword')">⚔️ Exhaust Sword</button>
+          <button class="decree-add-btn" onclick="useVagabondItem('torch')"> Torch Explore</button>
+          <button class="decree-add-btn" onclick="useVagabondItem('hammer')">🔨 Hammer Repair</button>
+        </div>
+
+        <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 0.75rem 0;">
+
+        <label>2. Combat Phase Intercept:</label>
+        <button class="battle-btn action" style="background-color: #a13b2d; width:100%;" onclick="processVagabondHit()">💥 Take 1 Battle Hit</button>
+        <button class="battle-btn simulation" style="background-color: #7a5c43; width:100%; margin-top:0.5rem;" onclick="restInForest()">🌲 Retreat to Forest & Rest</button>
+      </div>
+
+      <!-- Live Bag Status Panels -->
+      <div class="satchel-inventory-grids">
+        <!-- Ready items -->
+        <div class="satchel-bay">
+          <div class="bay-title">🎒 ACTIVE SATCHEL (READY TO USE)</div>
+          <div id="satchel-ready-pool" class="item-bead-row">
+            <!-- Starting physical items -->
+            <div class="item-bead status-ready" id="item-boot">🥾 Boot</div>
+            <div class="item-bead status-ready" id="item-sword">⚔️ Sword</div>
+            <div class="item-bead status-ready" id="item-torch"> Torch</div>
+            <div class="item-bead status-ready" id="item-hammer">🔨 Hammer</div>
+          </div>
+        </div>
+
+        <!-- Damaged Box -->
+        <div class="satchel-bay critical-bay">
+          <div class="bay-title" style="color:#b91c1c;">🛠️ DAMAGED BOX (BROKEN)</div>
+          <div id="satchel-damaged-pool" class="item-bead-row">
+            <!-- Damaged items get kicked here -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <p id="satchel-log" class="micro-note-log" style="color:#7a5c43;"></p>
+  </div> 
+  </div>
+
+
+  <!-- Strategic Outlook Evaluation -->
+ 
+    <div class="visualizer-pane-stat strategy-box strength">
+      <div class="border-vagabond">
+      <h2 class="black">Strategic Strengths</h2>
+      </div>
+
+    <div class="pane-body">
+      <ul>
+        <li>Consistent ability to gain points.</li>
+        <li>If they keep aiding one person, they gain many points.</li>
+        <li>RPG elements make the game more interesting.</li>
+      </ul>
+    </div>
+    </div>
+
+  
+    <div class="visualizer-pane-stat strategy-box weakness">
+      <div class="border-vagabond">
+      <h2 class="black">Critical Weaknesses</h2>
+      </div>
+      <div class="pane-body">
+      <ul>
+        <li>When the Vagabond is targeted, they can’t do anything.</li>
+        <li>When all the items are destroyed, they can’t do anything.</li>
+        <li>Lose most of their fights.</li>
+        <li>Most confusing faction of all the starters.</li>
+      </ul>
+      </div>
+    </div>
+
+  
+</section>
+
+
+
+
+
+
+
+<!-- UNDERGROUND DUCHY FACTION SECTION -->
+<section id="duchy-section" class="content-section">
+  <div class="faction-header duchy-banner">
+    <h2 class="black">🐹 Underground Duchy (The Subterranean Empire)</h2>
+    <p class="faction-subtitle">Deploy underground tunnels from your private subterranean Burrow, sway political ministers, and manage a fragile empire.</p>
+  </div>
+
+
+
+
+  <!-- Core Abilities Split Grid -->
+
+    <div class="visualizer-pane-stat text-pane">
+      <div class="border-duchy">
+      <h2 class="black">Faction Rules & Abilities</h2>
+      </div>
+      <div class="pane-body">
+      <ul class="rules-list">
+        <li><strong>The Burrow & Tunnels:</strong> The Burrow is a private, unsuited clearing adjacent to every clearing with a Tunnel token. Non-Duchy pieces can never be placed in or moved into the Burrow, and you always rule it automatically. You have a hard cap of 3 Tunnel tokens on the map.</li>
+        <li><strong>Crafting:</strong> The Duchy crafts during Evening by activating citadels and markets.</li>
+        <li><strong>The Price of Failure:</strong> Whenever any number of Duchy buildings are removed, return your swayed minister card of the highest rank (Lord, then Noble, then Squire) back to the Unswayed pile. Permanently remove that minister's crown from the game entirely (reducing your scoring potential). Discard 1 random card from your hand.</li>
+      </ul>
+      </div>
+    </div>
+
+   
+    <div class="visualizer-pane-stat text-pane">
+      <div class="border-duchy">
+      <h2 class="black">Faction Setup</h2>
+      </div>
+
+      <div class="pane-body">
+      <ol class="rules-list">
+        <li><strong>Gather Warriors & Tunnels:</strong> Form supplies of 20 warriors and 3 tunnel tokens.</li>
+        <li><strong>Prepare the Burrow:</strong> Place the Burrow near the map.</li> 
+        <li><strong>Surface:</strong> Place 2 warriors and 1 tunnel in a corner clearing that is not the starting corner clearing of another player and, if possible, is diagonally opposite from a starting corner clearing. Then place 2 warriors in each clearing adjacent to the chosen corner clearing, except the Burrow.</li>
+        <li><strong>Fill Buildings Tracks:</strong> Place 3 citadels and 3 markets on your respective Buildings spaces.</li>
+        <li><strong>Collect Ministers:</strong> Place 9 minister cards face up on your Unswayed Ministers pile.</li> 
+        <li><strong>Fill Crown Spaces:</strong> Place 9 crowns on the spaces with VPs on your faction board.</li> 
+      </ol>
+      </div>
+    </div>
+
+
+  
+    <!-- Action Array Reference Table -->
+
+    <div class="visualizer-pane-stat text-pane">
+    <div class="border-duchy">
+    <h2 class="black"> Turn Phases & Action Economy</h2>
+    </div>
+
+  <div class="pane-body">
+    <div class="phase-container-ud">
+      <span class="phase-badge birdsong-badge">Birdsong</span>
+      <p>Place 1 warrior + 1 warrior per warrior icon showing in the Burrow.</p>
+    </div>
+
+    <div class="phase-container-ud">
+      <span class="phase-badge daylight-badge">Daylight</span>
+      <p><strong>Assembly:</strong> Take up to 2 actions in any order and number.</p>
+      <table class="mechanics-table">
+        <thead>
+          <tr>
+            <td><strong>Action</strong></td>
+            <td><strong>Mechanic Execution Rules</strong></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Build</strong></td>
+            <td> Reveal one card to place a citadel or market in a matching clearing you rule.</td>
+          </tr>
+          <tr>
+            <td><strong>Recruit</strong></td>
+            <td> Place one warrior in the Burrow.</td>
+          </tr>
+          <tr>
+            <td><strong>Move</strong></td>
+            <td> Take a move.</td>
+          </tr>
+          <tr>
+            <td><strong>Battle</strong></td>
+            <td> Initiate a battle.</td>
+          </tr>
+          <tr>
+            <td><strong>Dig</strong></td>
+            <td> Spend 1 card to place a tunnel token in a matching clearing without a tunnel token. Then, move up to 4 warriors (at least 1) from the Burrow to that clearing. If all 3 tunnels are on the map, you may remove a tunnel first.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>Parliament:</strong> Take the action of each swayed minister once in any order.</p>
+      <table class="mechanics-table">
+        <thead>
+          <tr>
+            <td><strong>Minister</strong></td>
+            <td><strong>Rank Class</strong></td>
+            <td><strong>Swayed Minister Action</strong></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Foremole</strong></td>
+            <td>Squire</td>
+            <td> Reveal any card to place a citadel or market in any clearing (matching or not) you rule.</td>
+          </tr>
+          <tr>
+            <td><strong>Captain</strong></td>
+            <td>Squire</td>
+            <td> Initiate a battle.</td>
+          </tr>
+          <tr>
+            <td><strong>Marshal</strong></td>
+            <td>Squire</td>
+            <td> Take a move.</td>
+          </tr>
+          <tr>
+            <td><strong>Brigadier</strong></td>
+            <td>Noble</td>
+            <td> Take up to 2 moves or initiate up to 2 battles.</td>
+          </tr>
+          <tr>
+            <td><strong>Banker</strong></td>
+            <td>Noble</td>
+            <td> Spend any number of cards of the same suit to score VPs in equal number.</td>
+          </tr>
+          <tr>
+            <td><strong>Mayor</strong></td>
+            <td>Noble</td>
+            <td> Take the action of any swayed noble or squire.</td>
+          </tr>
+          <tr>
+            <td><strong>Duchess of Mud</strong></td>
+            <td>Lord</td>
+            <td> Score 2 VPs if all 3 tunnels are on the map.</td>
+          </tr>
+          <tr>
+            <td><strong>Baron of Dirt</strong></td>
+            <td>Lord</td>
+            <td> Score 1 VP per market on the map.</td>
+          </tr>
+          <tr>
+            <td><strong>Earl of Stone</strong></td>
+            <td>Lord</td>
+            <td> Score 1 VP per citadel on the map.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>Sway:</strong></p>
+        <ul>
+          <li>Choose a minister card in your Unswayed Ministers pile.</li>
+          <li>You must have a crown on your faction board matching the rank (squire, noble, lord) of that minister.</li>
+          <li>Reveal the number of cards listed on the chosen minister.</li>
+          <li>For each card you wish to reveal, you must have at least one Duchy piece in a clearing matching the suit of that card.</li>
+          <li>Each such clearing allows you to reveal 1 matching card.</li>
+          <li>Take the chosen minister card and place it above your faction board.</li>
+          <li>Take a crown of that minister’s rank from your faction board and place it on the minister card.</li>
+          <li>Score the VPs listed on the space uncovered on your faction board.</li>
+        </ul>
+    </div>
+    
+    <div class="phase-container-ud">
+      <span class="phase-badge evening-badge">Evening</span>
+      <p><strong>Discard & Return Revealed Cards:</strong> Discard any bird cards you revealed this turn, then return all other cards you revealed this turn to your hand.</p>
+      <p><strong>Craft:</strong> You may craft by activating citadels and markets (These are identical for crafting purposes).</p>
+      <p><strong>Draw & Discard:</strong> Draw 1 card + 1 card per card draw icon showing. If your hand exceeds 5 cards, discard down to 5.</p>
+    </div>
+  </div>
+    </div>
+
+
+
+  <!-- Minister Directory Reference Table -->
+  <div class="visualizer-pane-stat text-pane">
+    <div class="border-duchy">
+    <h2 class="black">The Grand Court Minister Tier Hierarchy</h2>
+    </div>
+  <div class="pane-body">
+    <table class="mechanics-table">
+      <thead>
+        <tr>
+          <th>Minister Card</th>
+          <th>Rank Class</th>
+          <th>Mandatory Parliamentary Action Benefit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Foremole / Captain / Marshal</strong></td>
+          <td>Squire Tier</td>
+          <td><strong>Foremole:</strong> Reveal any card to build a Citadel/Market anywhere you rule. <br><strong>Captain:</strong> Free Battle. <br><strong>Marshal:</strong> Free Move.</td>
+        </tr>
+        <tr>
+          <td><strong>Brigadier / Banker / Mayor</strong></td>
+          <td>Noble Tier</td>
+          <td><strong>Brigadier:</strong> Take up to 2 moves or 2 battles. <br><strong>Banker:</strong> Discard matching suits to score equal VPs. <br><strong>Mayor:</strong> Copy any active Squire or Noble action.</td>
+        </tr>
+        <tr>
+          <td><strong>Duchess of Mud / Baron / Earl</strong></td>
+          <td>Lord Tier</td>
+          <td><strong>Duchess:</strong> Score 2 VPs if all 3 tunnels are out. <br><strong>Baron:</strong> Score 1 VP per map Market. <br><strong>Earl:</strong> Score 1 VP per map Citadel.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+
+
+
+
+  <!-- INTERACTIVE PARLIAMENT & IMPEACHMENT ENGINE -->
+  <div class="visualizer-pane-stat interactive-full-width">
+    <div class="sandbox-header">
+      <div class="border-duchy">
+      <h2 class="black">Parliament Politician & Impeachment Simulator</h2>
+      </div>
+    <div class="pane-body">
+      <p>Sway ministers to expand your turn action economy. Simulate enemy counter-attacks to calculate the devastating costs of political failure.</p>
+    </div>
+    
+    <div class="duchy-simulator-layout">
+      <!-- Controls Panel -->
+      <div class="duchy-controls">
+        <label>1. Sway a New Minister:</label>
+        <select id="duchy-minister-select">
+          <option value="foremole">Foremole (Squire - Free Build)</option>
+          <option value="captain">Captain (Squire - Free Battle)</option>
+          <option value="marshal">Marshal (Squire - Free Move)</option>
+          <option value="brigadier">Brigadier (Noble - 2 Moves/Battles)</option>
+          <option value="banker">Banker (Noble - Cards to VPs)</option>
+          <option value="mayor">Mayor (Noble - 1 Action of swayed Noble or Squire)</option>
+          <option value="duchess">Duchess of Mud (Lord - 3 Tunnels = 2 VPs)</option>
+          <option value="baron">Baron of Dirt (Lord - 1 VP per Market)</option>
+          <option value="earl">Earl of Stone (Lord - 1 VP per Citadel)</option>
+        </select>
+        <button class="battle-btn simulation" style="background-color: #d29b62; color:#fffdf6; width:100%; margin-top:0.25rem;" onclick="swayMinister()">Sway Selected Minister</button>
+
+        <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 0.75rem 0;">
+
+        <label>2. Crisis Event Trigger:</label>
+        <button class="battle-btn action" style="background-color: #a13b2d; width:100%;" onclick="triggerDuchyFailure()">💥 Building Destroyed (Price of Failure!)</button>
+      </div>
+
+      <!-- Live Cabinet Status Panels -->
+      <div class="duchy-cabinet-grids">
+        <!-- Swayed Ministers -->
+        <div class="cabinet-bay">
+          <div class="bay-title">👑 SWAYED PARLIAMENT CABINET (ACTIVE ACTIONS)</div>
+          <div id="swayed-ministers-pool" class="minister-badge-row">
+            <!-- Dynamically populated swayed cards go here -->
+            <div class="empty-placeholder-note" id="cabinet-empty-note">No ministers currently swayed. Your Parliament has no extra actions.</div>
+          </div>
+        </div>
+
+        <!-- Global Faction Board Metrics -->
+        <div class="cabinet-bay metric-bay">
+          <div class="bay-title">📊 UNCOVERED BOARD CROWNS & METRICS</div>
+          <div style="display: flex; gap: 1.5rem; justify-content: space-around; margin-top: 0.5rem;">
+            <div>👑 Active Crowns: <span id="ui-crown-count" style="font-weight:bold; color:#b27329;">9</span> / 9</div>
+            <div>❌ Destroyed Crowns: <span id="ui-dead-crowns" style="font-weight:bold; color:#a13b2d;">0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p id="duchy-log" class="micro-note-log" style="color:#664d36;"></p>
+    </div>
+  </div>
+
+
+
+  <!-- Strategic Outlook Evaluation -->
+ 
+    <div class="visualizer-pane-stat strategy-box strength">
+      <div class="border-duchy">
+      <h2 class="black">Strategic Strengths</h2>
+      </div>
+
+    <div class="pane-body">
+      <ul>
+        <li>Lots of cards means lots of VPs.</li>
+        <li>Easy and consistent way of earning VPs.</li>
+        <li>Having all 3 tunnels can win games.</li>
+      </ul>
+    </div>
+    </div>
+
+  
+    <div class="visualizer-pane-stat strategy-box weakness">
+      <div class="border-duchy">
+      <h2 class="black">Critical Weaknesses</h2>
+      </div>
+      <div class="pane-body">
+      <ul>
+        <li>If buildings are targeted, they’re screwed.</li>
+        <li>Can lose all of their ministers + crowns.</li>
+        <li>Slow start.</li>
+      </ul>
+      </div>
+    </div>
+
+</section>
+
+
+
+
+
+
+<!-- CORVID CONSPIRACY FACTION SECTION -->
+<section id="corvid-section" class="content-section">
+  <div class="faction-header corvid-banner">
+    <h2 class="black">🐦 Corvid Conspiracy (The Hidden Insurgency)</h2>
+    <p class="faction-subtitle">Distract your opponents, plant hidden traps, and exploit the Woodland through a network of secret plots.</p>
+  </div>
+
+  <!-- Core Abilities Split Grid -->
+
+    <div class="visualizer-pane-stat text-pane">
+      <div class="border-corvid">
+      <h2 class="black">Faction Rules & Abilities</h2>
+      </div>
+      <div class="pane-body">
+      <ul class="rules-list">
+        <li><strong>Nimble:</strong> You can move freely regardless of who rules the origin or destination clearing. Clearings are strictly limited to 1 plot token max.</li>
+        <li><strong>Embedded Agents:</strong> As a defender in battle, if you have a facedown plot token in the clearing, you automatically deal +1 extra hit to the attacker (even if you are defenseless).</li>
+        <li><strong>Exposure Risk:</strong> Enemies can show you a matching card to guess a facedown plot's identity. If they are correct, the token is disarmed and removed. If they are wrong, they must hand that card directly into your hand!</li>
+        <li><strong>Crafting:</strong> Craft during Birdsong by activating plot tokens (whether face up or down).</li>
+        <li><strong>Plot Tokens:</strong> 8 plot tokens, 2 of each type. While in the Corvids’ supply, plot tokens are face down. On the map, a plot token is can be face up or face down. Corvids can inspect any facedown plot token at any time. Each clearing can hold only 1 plot token.</li>
+      </ul>
+      </div>
+    </div>
+
+
+
+    <div class="visualizer-pane-stat text-pane">
+      <div class="border-corvid">
+      <h2 class="black">Faction Setup</h2>
+      </div>
+
+      <div class="pane-body">
+      <ol class="rules-list">
+        <li><strong>Gather Warriors & Tunnels:</strong> Form supplies of 15 warriors and 8 plot tokens face down.</li>
+        <li><strong>Scatter:</strong> Place 1 warrior in any clearing of each suit (total 3).</li> 
+      </ol>
+      </div>
+    </div>
+
+
+
+
+     <!-- Action Array Reference Table -->
+
+    <div class="visualizer-pane-stat text-pane">
+    <div class="border-corvid">
+    <h2 class="black"> Turn Phases & Action Economy</h2>
+    </div>
+
+  <div class="pane-body">
+    <div class="phase-container-cc">
+      <span class="phase-badge birdsong-badge">Birdsong</span>
+      <p><strong>Craft:</strong> You may activate plot tokens to craft cards from your hand.</p>
+      <p><strong>Flip Plots:</strong> Any number of times, flip a plot token face up in a clearing with any Corvid warriors, score 1 VP per face-up plot token on the map (including the newly flipped one), and then resolve its flip effect if it is a bomb or extortion.</p>
+      <p><strong>Recruit:</strong> Once per turn, you may spend any card to place one warrior in each matching clearing. If you spend a bird, choose one suit to place warriors in.</p>
+    </div>
+
+    <div class="phase-container-cc">
+      <span class="phase-badge daylight-badge">Daylight</span>
+      <p>Take up to 3 actions, as follows, in any order and number.</p>
+      <table class="mechanics-table">
+        <thead>
+          <tr>
+            <td><strong>Action</strong></td>
+            <td><strong>Mechanic Execution Rules</strong></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Move</strong></td>
+            <td> Take a move.</td> 
+          </tr>
+          <tr>
+            <td><strong>Plot</strong></td>
+            <td> Remove a Corvid warrior + another Corvid warrior per plot you have placed this turn, from a clearing with no plot tokens to place a face-down plot token there.</td>
+          </tr>
+          <tr>
+            <td><strong>Battle</strong></td>
+            <td> Initiate a battle.</td>
+          </tr>
+          <tr>
+            <td><strong>Trick</strong></td>
+            <td> Swap 2 plot tokens on the map. Both plot tokens must be face-up or face-down.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="phase-container-cc">
+      <span class="phase-badge evening-badge">Evening</span>
+      <p><strong>Exert:</strong> You may take 1 action listed in Daylight if you choose not to draw cards during Evening.</p>
+      <p><strong>Draw:</strong> Draw 1 card + 1 card per face-up extortion token on the map. If your hand exceeds 5 cards, discard down to 5.</p>
+    </div>
+  </div>
+  </div>
+    </div>
+
+
+
+     <!-- Flipped Plot Token Mechanical Reference Table -->
+  <div class="visualizer-pane-stat text-pane">
+    <div class="border-corvid">
+    <h2 class="black">The Underground Conspiracy Arsenal</h2>
+    </div>
+    <div class="pane-body">
+    <table class="mechanics-table">
+      <thead>
+        <tr>
+          <th>Plot Token</th>
+          <th>Flip Effect & Strategy Profile</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>💣 Bomb</strong></td>
+          <td>When flipped, detonates to remove all enemy pieces in its clearing. Devastating for breaking up massive enemy garrisons.</td>
+        </tr>
+        <tr>
+          <td><strong>📣 Raid</strong></td>
+          <td>Acts as a dynamic spawn point. If destroyed, it triggers in your favor. (If removed via standard Exposure, it does not place extra warriors).</td>
+        </tr>
+        <tr>
+          <td><strong>💰 Extortion</strong></td>
+          <td>When flipped, instantly steals a card from a player in that clearing. In Evening, grants +1 extra card draw per active face-up Extortion on the map.</td>
+        </tr>
+        <tr>
+          <td><strong>🕸️ Snare</strong></td>
+          <td>Locks down paths. Prevents other players from moving pieces out of this clearing entirely.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+
+
+  <!-- INTERACTIVE PLOT & EXPOSURE ENGINE -->
+  <div class="visualizer-pane-stat interactive-full-width">
+    <div class="sandbox-header">
+      <div class="border-corvid">
+      <h2 class="black">Hidden Plots & Exposure Guessing Simulator</h2>
+      </div>
+    <div class="pane-body">
+      <p>Plant hidden tokens across the map. Test out the Exposure mechanics to see what happens when opponents guess correctly vs. giving you free cards.</p>
+    </div>
+    
+    <div class="corvid-simulator-layout">
+      <!-- Controls Panel -->
+      <div class="corvid-controls">
+        <label>1. Plant a Secret Plot:</label>
+        <select id="corvid-plot-select">
+          <option value="bomb">💣 Bomb Plot</option>
+          <option value="raid">📣 Raid Plot</option>
+          <option value="extortion">💰 Extortion Plot</option>
+          <option value="snare">🕸️ Snare Plot</option>
+        </select>
+        <button class="battle-btn action" style="background-color: #6b21a8; width:100%;" onclick="plantPlot()">Plant Facedown Plot</button>
+
+        <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 0.75rem 0;">
+
+        <label>2. Enemy Exposure Check:</label>
+        <select id="enemy-guess-select">
+          <option value="bomb">Guess: 💣 Bomb</option>
+          <option value="raid">Guess: 📣 Raid</option>
+          <option value="extortion">Guess: 💰 Extortion</option>
+          <option value="snare">Guess: 🕸️ Snare</option>
+        </select>
+        <button class="battle-btn simulation" style="background-color: #4a154b; color: white; width:100%; margin-top:0.25rem;" onclick="triggerExposureGuess()">Submit Enemy Guess</button>
+        
+        <button class="battle-btn simulation" style="background-color: #2e7d32; color: white; width:100%; margin-top:0.5rem;" onclick="flipPlotFaceUp()">Reveal & Score Plots</button>
+      </div>
+
+      <!-- Map Display Panel -->
+      <div class="corvid-map-display">
+        <div class="sympathy-track-header">Woodland Clearing Plot Zone</div>
+        <div id="corvid-plots-container" class="corvid-plots-container">
+          <div class="empty-placeholder-note" id="plot-empty-note">Clearing is empty. Plant a plot from the shadows.</div>
+        </div>
+      </div>
+    </div>
+    <p id="corvid-log" class="micro-note-log" style="color:#4a154b;"></p>
+    </div>
+  </div>
+
+
+
+  <!-- Strategic Outlook Evaluation -->
+ 
+    <div class="visualizer-pane-stat strategy-box strength">
+      <div class="border-corvid">
+      <h2 class="black">Strategic Strengths</h2>
+      </div>
+
+    <div class="pane-body">
+      <ul>
+        <li>If people guess incorrectly, they get free cards.</li>
+        <li>When a raid is destroyed, it works in their favour.</li>
+        <li>Able to place 3 warriors at a time.</li>
+        <li>The Embedded Agents ability is game-changing.</li>
+      </ul>
+    </div>
+    </div>
+
+  
+    <div class="visualizer-pane-stat strategy-box weakness">
+      <div class="border-corvid">
+      <h2 class="black">Critical Weaknesses</h2>
+      </div>
+      <div class="pane-body">
+      <ul>
+        <li>Hard to earn VPs.</li>
+        <li>If their tokens are targeted, they can’t do anything.</li>
+        <li>Not able to group up warriors effectively.</li>
+        <li>Weak cavalry.</li>
+      </ul>
+      </div>
+    </div>
+
+</section>
+
+
+
+
+
+<section id="oracle-section" class="rule-section">
+  
+<!-- *Root Oracle* -->
+  <div class="chat-card">
+  <div class="chat-header">
+    <div class="chat-title-group">
+      <span class="chat-icon">📜</span>
+      <span class="chat-title">Law of Root Assistant</span>
+    </div>
+    <span class="oracle-status-badge">AI Judge</span>
+  </div>
+
+  <div class="chat-messages-container" id="chat-messages">
+    <!-- Messages render here -->
+  </div>
+
+  <div class="chat-input-area">
+    <input type="text" id="oracle-input" placeholder="e.g. Does Sympathy token grant rule?">
+    <button id="oracle-submit-btn" class="ask-btn">Ask</button>
+  </div>
+</div>
+</section>
+
+
+
+  </main>
+
+<script>
+
+// ==========================================
+// 1. GLOBAL STATE & CLEARING SANDBOX
+// ==========================================
+let sandboxState = {
+  catWarriors: 0,
+  catBuildings: 0,
+  eyrieWarriors: 0,
+  eyrieBuildings: 0,
+  woodlandWarriors: 0,
+  woodlandBuildings: 0,
+  duchyWarriors: 0,
+  corvidWarriors: 0
+};
+
+function adjustSandboxPieces(variableName, amount) {
+  if (sandboxState[variableName] + amount < 0) return;
+  sandboxState[variableName] += amount;
+  renderSandboxPieces();
+}
+
+function renderSandboxPieces() {
+  const zones = {
+    cat: document.getElementById('sandbox-marquise-pieces') || document.querySelector('.faction-zone:nth-child(1) div'),
+    eyrie: document.getElementById('sandbox-eyrie-pieces') || document.querySelector('.faction-zone:nth-child(2) div'),
+    woodland: document.getElementById('sandbox-alliance-pieces') || document.querySelector('.faction-zone:nth-child(3) div'),
+    duchy: document.getElementById('sandbox-duchy-pieces') || document.querySelector('.faction-zone:nth-child(4) div'),
+    corvid: document.getElementById('sandbox-corvid-pieces') || document.querySelector('.faction-zone:nth-child(5) div')
+  };
+
+  for (let key in zones) {
+    if (zones[key]) zones[key].innerHTML = '';
+  }
+
+  // Inject Marquise
+  for (let i = 0; i < sandboxState.catWarriors; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'piece-dot cat-warrior';
+    if(zones.cat) zones.cat.appendChild(dot);
+  }
+  for (let i = 0; i < sandboxState.catBuildings; i++) {
+    const square = document.createElement('div');
+    square.className = 'piece-square cat-building';
+    if(zones.cat) zones.cat.appendChild(square);
+  }
+
+  // Inject Eyrie
+  for (let i = 0; i < sandboxState.eyrieWarriors; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'piece-dot eyrie-warrior';
+    if(zones.eyrie) zones.eyrie.appendChild(dot);
+  }
+  for (let i = 0; i < sandboxState.eyrieBuildings; i++) {
+    const square = document.createElement('div');
+    square.className = 'piece-square eyrie-building';
+    if(zones.eyrie) zones.eyrie.appendChild(square);
+  }
+
+  // Inject Alliance
+  for (let i = 0; i < sandboxState.woodlandWarriors; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'piece-dot alliance-warrior';
+    if(zones.woodland) zones.woodland.appendChild(dot);
+  }
+  for (let i = 0; i < sandboxState.woodlandBuildings; i++) {
+    const square = document.createElement('div');
+    square.className = 'piece-square alliance-building';
+    if(zones.woodland) zones.woodland.appendChild(square);
+  }
+
+  // Inject Duchy
+  for (let i = 0; i < sandboxState.duchyWarriors; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'piece-dot duchy-warrior';
+    if(zones.duchy) zones.duchy.appendChild(dot);
+  }
+
+  // Inject Corvid
+  for (let i = 0; i < sandboxState.corvidWarriors; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'piece-dot corvid-warrior';
+    if(zones.corvid) zones.corvid.appendChild(dot);
+  }
+
+
+  calculateClearingControl();
+}
+
+function calculateClearingControl() {
+  const catTotal = sandboxState.catWarriors + sandboxState.catBuildings;
+  const eyrieTotal = sandboxState.eyrieWarriors + sandboxState.eyrieBuildings;
+  const woodlandTotal = sandboxState.woodlandWarriors + sandboxState.woodlandBuildings;
+  const duchyTotal = sandboxState.duchyWarriors;
+  const corvidTotal = sandboxState.corvidWarriors;
+  
+  const banner = document.getElementById('sandbox-status-banner') || document.querySelector('.sandbox-status');
+  if (!banner) return;
+  
+  const highestScore = Math.max(catTotal, eyrieTotal, woodlandTotal, duchyTotal, corvidTotal);
+  
+  if (highestScore === 0) {
+    banner.className = 'sandbox-banner status-contested';
+    banner.innerText = `⚖️ Contested Clearing (Empty)`;
+    return;
+  }
+  
+  if (eyrieTotal === highestScore) {
+    const isTie = (eyrieTotal === catTotal || eyrieTotal === woodlandTotal || eyrieTotal === duchyTotal || eyrieTotal === corvidTotal);
+    banner.innerText = `👑 Eyrie Dynasties Rules! (${eyrieTotal} vs ${catTotal} vs ${woodlandTotal} vs ${duchyTotal} vs ${corvidTotal}${isTie ? ' - Lords of the Forest' : ''})`;
+    banner.className = 'sandbox-banner eyrie-wins';
+  } 
+  else if (catTotal === highestScore && catTotal > eyrieTotal && catTotal > woodlandTotal && catTotal > duchyTotal && catTotal > corvidTotal) {
+    banner.innerText = `👑 Marquise de Cat Rules! (${catTotal} vs ${eyrieTotal} vs ${woodlandTotal} vs ${duchyTotal} vs ${corvidTotal})`;
+    banner.className = 'sandbox-banner cat-wins';
+  } 
+  else if (woodlandTotal === highestScore && woodlandTotal > eyrieTotal && woodlandTotal > catTotal && woodlandTotal > duchyTotal && woodlandTotal > corvidTotal) {
+    banner.innerText = `👑 Woodland Alliance Rules! (${woodlandTotal} vs ${catTotal} vs ${eyrieTotal} vs ${duchyTotal} vs ${corvidTotal})`;
+    banner.className = 'sandbox-banner woodland-wins';
+  } 
+  else if (duchyTotal === highestScore && duchyTotal > eyrieTotal && duchyTotal > catTotal && duchyTotal > woodlandTotal && duchyTotal > corvidTotal) {
+    banner.innerText = `👑 Underground Duchy Rules! (${duchyTotal} vs ${catTotal} vs ${eyrieTotal} vs ${woodlandTotal} vs ${corvidTotal})`;
+    banner.className = 'sandbox-banner duchy-wins';
+  }
+  else if (corvidTotal === highestScore && corvidTotal > eyrieTotal && corvidTotal > catTotal && corvidTotal > woodlandTotal && corvidTotal > duchyTotal) {
+    banner.innerText = `👑 Corvid Conspiracy Rules! (${corvidTotal} vs ${catTotal} vs ${eyrieTotal} vs ${duchyTotal} vs ${woodlandTotal})`;
+    banner.className = 'sandbox-banner corvid-wins';
+  }
+  else {
+    banner.innerText = `⚖️ Contested Clearing (Tied: ${highestScore})`;
+    banner.className = 'sandbox-banner status-contested';
+  }
+}
+
+
+
+// Global state tracking for the battle phase simulator
+let battleState = {
+  step: 1,
+  attackerWarriors: 3,
+  defenderWarriors: 2,
+  ambushTriggered: false,
+  rawAttRoll: 0,
+  rawDefRoll: 0,
+  finalAttHits: 0,
+  finalDefHits: 0
+};
+
+function goToBattleStep(stepNumber) {
+  battleState.step = stepNumber;
+  
+  // Toggle visibility profiles across panels
+  document.querySelectorAll('.battle-step-pane').forEach(pane => pane.classList.remove('active'));
+  document.querySelectorAll('.step-dot').forEach(dot => dot.classList.remove('active'));
+  
+  document.getElementById(`pane-step${stepNumber}`).classList.add('active');
+  
+  // Activate dot step trails up to current
+  for(let i = 1; i <= stepNumber; i++) {
+    document.getElementById(`dot-step${i}`).classList.add('active');
+  }
+
+  // Pre-load data calculations if arriving at step 3
+  if(stepNumber === 3) {
+    document.getElementById('calc-att-roll').innerText = battleState.rawAttRoll;
+    document.getElementById('calc-def-roll').innerText = battleState.rawDefRoll;
+    document.getElementById('calc-att-cap').innerText = battleState.attackerWarriors;
+    document.getElementById('calc-def-cap').innerText = battleState.defenderWarriors;
+  }
+}
+
+function triggerAmbush(played) {
+  if (played && !battleState.ambushTriggered) {
+    battleState.ambushTriggered = true;
+    // Ambush instantly inflicts 2 hits to attacker armies
+    battleState.attackerWarriors = Math.max(0, battleState.attackerWarriors - 2);
+    document.getElementById('battle-att-warriors').value = battleState.attackerWarriors;
+    document.getElementById('ambush-status-text').innerText = "💥 Ambush played! 2 Attacker warriors removed before the roll.";
+  }
+}
+
+function rollBattleDice() {
+  // Capture current form values in case user adjusted them
+  battleState.attackerWarriors = parseInt(document.getElementById('battle-att-warriors').value) || 0;
+  battleState.defenderWarriors = parseInt(document.getElementById('battle-def-warriors').value) || 0;
+
+  // Root uses specialized 12-sided dice with faces containing values 0, 1, 2, or 3
+  const pool = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3];
+  const rollA = pool[Math.floor(Math.random() * pool.length)];
+  const rollB = pool[Math.floor(Math.random() * pool.length)];
+  
+  // Attacker claims higher roll, Defender claims lower roll
+  battleState.rawAttRoll = Math.max(rollA, rollB);
+  battleState.rawDefRoll = Math.min(rollA, rollB);
+  
+  // Update Dice Visuals
+  const dieA = document.getElementById('die-attack');
+  const dieB = document.getElementById('die-defend');
+  dieA.innerText = battleState.rawAttRoll;
+  dieB.innerText = battleState.rawDefRoll;
+  
+  // Add cool spin animation feedback
+  dieA.style.transform = "rotate(360deg)";
+  dieB.style.transform = "rotate(-360deg)";
+  setTimeout(() => {
+    dieA.style.transform = "none";
+    dieB.style.transform = "none";
+  }, 200);
+
+  document.getElementById('btn-to-step3').disabled = false;
+}
+
+function calculateFinalHits() {
+  // 1. Check warrior limits cap
+  let attHits = Math.min(battleState.rawAttRoll, battleState.attackerWarriors);
+  let defHits = Math.min(battleState.rawDefRoll, battleState.defenderWarriors);
+  
+  // 2. Check Defenseless Bonus rule
+  let attBonus = 0;
+  if(battleState.defenderWarriors === 0) {
+    attBonus = 1;
+    document.getElementById('calc-att-bonus').innerText = "+1 Defenseless Bonus!";
+  } else {
+    document.getElementById('calc-att-bonus').innerText = "";
+  }
+  document.getElementById('calc-def-bonus').innerText = "";
+
+  battleState.finalAttHits = attHits + attBonus;
+  battleState.finalDefHits = defHits;
+
+  document.getElementById('calc-att-final').innerText = battleState.finalAttHits;
+  document.getElementById('calc-def-final').innerText = battleState.finalDefHits;
+  
+  document.getElementById('btn-to-step4').disabled = false;
+  
+  // Pre-generate step 4 summary message text
+  document.getElementById('battle-summary-text').innerHTML = 
+    `⚔️ Battle Result:<br>` +
+    `• Attacker inflicts <strong>${battleState.finalAttHits}</strong> hit(s) removing defender pieces.<br>` +
+    `• Defender inflicts <strong>${battleState.finalDefHits}</strong> hit(s) removing attacker pieces.`;
+}
+
+function resetBattleSimulator() {
+  battleState = {
+    step: 1,
+    attackerWarriors: 3,
+    defenderWarriors: 2,
+    ambushTriggered: false,
+    rawAttRoll: 0,
+    rawDefRoll: 0,
+    finalAttHits: 0,
+    finalDefHits: 0
+  };
+  
+  document.getElementById('battle-att-warriors').value = 3;
+  document.getElementById('battle-def-warriors').value = 2;
+  document.getElementById('ambush-status-text').innerText = "";
+  document.getElementById('die-attack').innerText = "?";
+  document.getElementById('die-defend').innerText = "?";
+  document.getElementById('btn-to-step3').disabled = true;
+  document.getElementById('btn-to-step4').disabled = true;
+  
+  goToBattleStep(1);
+}
+
+
+function toggleSupplyItem(element) {
+  element.classList.toggle('crafted');
+}
+
+let remainingRuins = 4;
+function toggleRuin(id) {
+  const token = document.getElementById(`ruin-${id}`);
+  token.classList.toggle('explored');
+  
+  // Recalculate remaining active ruins
+  remainingRuins = document.querySelectorAll('.ruin-token.claimed').length - document.querySelectorAll('.ruin-token.explored').length;
+  
+  const statusText = document.getElementById('ruins-status-text');
+  if (remainingRuins === 0) {
+    statusText.innerHTML = "✨ All Ruins explored and cleared from paths!";
+  } else {
+    statusText.innerHTML = `${remainingRuins} Ruin(s) remaining on map (blocks paths until explored).`;
+  }
+}
+
+// Victory points and conditions global state tracking engine
+let victoryState = {
+  scores: { cat: 0, eyrie: 0, woodland: 0 },
+  dominance: { cat: null, eyrie: null, woodland: null },
+  activeFactions: { cat: "Marquise de Cat", eyrie: "Eyrie Dynasties", woodland: "Woodland Alliance" }
+};
+
+function adjustScore(faction, amount) {
+  // Bound checks to match valid Root board values (0 to 30)
+  let currentScore = victoryState.scores[faction];
+  if (currentScore + amount < 0) return;
+  
+  victoryState.scores[faction] += amount;
+  document.getElementById(`score-val-${faction}`).innerText = victoryState.scores[faction];
+
+  // Instantly trigger check to see if a victory milestone occurred
+  if (victoryState.scores[faction] >= 30) {
+    alert(`👑 Victory! The ${victoryState.activeFactions[faction]} reached 30 VPs and immediately wins the game!`);
+    resetVictoryTracker();
+  }
+}
+
+function activateDominance(suit) {
+  // Pick which faction is currently being demonstrated (for simplicity, we track the player interacting)
+  // Let's pop up a swift menu choice to select who is playing the Dominance card
+  const choice = prompt("Which faction is activating the Dominance card?\nEnter 'cat', 'eyrie', or 'woodland':").toLowerCase().trim();
+  
+  if (!victoryState.scores[choice] && victoryState.scores[choice] !== 0) {
+    alert("Invalid faction identifier entered.");
+    return;
+  }
+
+  // Enforce rule boundary condition: Must possess 10+ VPs to activate
+  if (victoryState.scores[choice] < 10) {
+    alert("❌ Rules Violation: You must have at least 10 Victory Points to activate a Dominance Card!");
+    return;
+  }
+
+  // Lock in dominance profile parameters
+  victoryState.dominance[choice] = suit;
+  
+  // Rule condition execution step: Remove the score marker entirely from standard VP track
+  const scoreRow = document.getElementById(`score-row-${choice}`);
+  scoreRow.classList.add('has-dominance');
+  
+  const msgPanel = document.getElementById('dominance-status-msg');
+  
+  // Custom text rendering depending on rule specifications
+  if (suit === 'bird') {
+    msgPanel.innerHTML = `⭐ <strong>${victoryState.activeFactions[choice]} Dominance:</strong> Win immediately if you rule 2 clearings in opposite corners at the start of Birdsong!`;
+  } else {
+    msgPanel.innerHTML = `⭐ <strong>${victoryState.activeFactions[choice]} Dominance:</strong> Win immediately if you rule 3 clearings matching the ${suit.toUpperCase()} suit at the start of Birdsong!`;
+  }
+}
+
+function resetVictoryTracker() {
+  victoryState.scores = { cat: 0, eyrie: 0, woodland: 0 };
+  victoryState.dominance = { cat: null, eyrie: null, woodland: null };
+  
+  ['cat', 'eyrie', 'woodland'].forEach(faction => {
+    document.getElementById(`score-val-${faction}`).innerText = 0;
+    document.getElementById(`score-row-${faction}`).classList.remove('has-dominance');
+  });
+
+  document.getElementById('dominance-status-msg').innerText = "No active dominance conditions.";
+}
+
+
+
+// Dynamic Navigation Scrollspy Logic
+document.addEventListener("DOMContentLoaded", () => {
+  const sections = document.querySelectorAll("section[id]");
+  
+  const observerOptions = {
+    root: null,
+    rootMargin: "-20% 0px -60% 0px", // Focus tracking box on upper-middle display area
+    threshold: 0
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute("id");
+        
+        // Remove active state profile from all elements
+        document.querySelectorAll(".nav-link").forEach(link => {
+          link.classList.remove("active-section");
+        });
+        
+        // Inject active design target specifically onto current link element
+        const activeLink = document.getElementById(`link-${id}`);
+        if (activeLink) {
+          activeLink.classList.add("active-section");
+        }
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach(section => observer.observe(section));
+});
+
+
+
+
+
+
+// Marquise Field Hospital Local Simulator State
+let hospitalState = {
+  casualties: 3,
+  savedWarriorsCount: 2
+};
+
+function adjustCasualties(amount) {
+  if (hospitalState.casualties + amount < 0) return;
+  hospitalState.casualties += amount;
+  document.getElementById('casualty-count').innerText = hospitalState.casualties;
+}
+
+function triggerFieldHospitals() {
+  if (hospitalState.casualties === 0) {
+    alert("No casualties to treat!");
+    return;
+  }
+
+  const selectedSuit = document.getElementById('hospital-card-suit').value;
+  const logPanel = document.getElementById('hospital-log');
+  const keepGrid = document.getElementById('keep-warriors-pool');
+
+  // Save the warriors
+  const savedCount = hospitalState.casualties;
+  hospitalState.savedWarriorsCount += savedCount;
+
+  // Add the new visual tokens into the Keep visual grid box
+  for (let i = 0; i < savedCount; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'piece-dot cat-warrior';
+    keepGrid.appendChild(dot);
+  }
+
+  // Log rules explanation output feedback
+  logPanel.innerText = `🏥 Spent 1 ${selectedSuit.toUpperCase()} card. Dispatched Field Hospitals! ${savedCount} warriors saved and placed inside The Keep.`;
+
+  // Reset casualty pool counter
+  hospitalState.casualties = 0;
+  document.getElementById('casualty-count').innerText = 0;
+}
+
+
+
+// Eyrie Dynasties Engine State Machine
+let decreeState = { recruit: [], move: [], battle: [], build: [] };
+let currentLeader = "charismatic";
+
+function changeEyrieLeader() {
+  currentLeader = document.getElementById('eyrie-leader-select').value;
+  const passiveText = document.getElementById('leader-passive-callout');
+  
+  // Wipe out existing decree tracking completely
+  decreeState = { recruit: [], move: [], battle: [], build: [] };
+  document.getElementById('slot-recruit').innerHTML = '';
+  document.getElementById('slot-move').innerHTML = '';
+  document.getElementById('slot-battle').innerHTML = '';
+  document.getElementById('slot-build').innerHTML = '';
+
+  // Apply Leader Specific Vizier Injections
+  if (currentLeader === "charismatic") {
+    passiveText.innerText = "Passive: Recruit 2 warriors instead of 1.";
+    injectVizier('recruit'); injectVizier('battle');
+  } else if (currentLeader === "builder") {
+    passiveText.innerText = "Passive: Ignore Disdain for Trade rule entirely when crafting.";
+    injectVizier('recruit'); injectVizier('move');
+  } else if (currentLeader === "commander") {
+    passiveText.innerText = "Passive: Deal +1 extra hit in battle as attacker.";
+    injectVizier('move'); injectVizier('battle');
+  } else if (currentLeader === "despot") {
+    passiveText.innerText = "Passive: Score +1 extra VP when removing buildings/tokens.";
+    injectVizier('move'); injectVizier('build');
+  }
+}
+
+function injectVizier(column) {
+  decreeState[column].push('bird');
+  const container = document.getElementById(`slot-${column}`);
+  const card = document.createElement('div');
+  card.className = `mini-decree-card card-suit-bird`;
+  card.innerText = "🦅 VIZIER";
+  container.appendChild(card);
+}
+
+function addCardToDecree(column) {
+  const selectedSuit = document.getElementById('decree-card-suit').value;
+  decreeState[column].push(selectedSuit);
+  
+  const container = document.getElementById(`slot-${column}`);
+  const card = document.createElement('div');
+  card.className = `mini-decree-card card-suit-${selectedSuit}`;
+  card.innerText = selectedSuit.toUpperCase();
+  container.appendChild(card);
+}
+
+function resolveDecree() {
+  let totalCards = decreeState.recruit.length + decreeState.move.length + decreeState.battle.length + decreeState.build.length;
+  document.getElementById('decree-log').style.color = '#15803d';
+  document.getElementById('decree-log').innerText = `✨ Order Upheld! The Dynasties completed all ${totalCards} scheduled decree actions.`;
+}
+
+function triggerTurmoil() {
+  // 1. Calculate Bird Card Penalties (including Viziers)
+  let birdCount = 0;
+  for (let col in decreeState) {
+    decreeState[col].forEach(suit => { if (suit === 'bird') birdCount++; });
+  }
+
+  // 2. Clear UI Logs and trigger disaster resets
+  document.getElementById('decree-log').style.color = '#b91c1c';
+  document.getElementById('decree-log').innerHTML = `💥 <strong>TURMOIL BREAKDOWN!</strong> Humiliated: You lost <strong>${birdCount} VP</strong> (${birdCount} Bird cards processed). The leader was deposed and the Decree purged!`;
+  
+  // Re-instantiate the leader structure loop
+  changeEyrieLeader();
+}
+
+// Initialize the starting viziers immediately on runtime boot loading
+setTimeout(changeEyrieLeader, 100);
+
+
+
+// Woodland Alliance Insurgency Engine State
+let allianceState = {
+  supporters: 3,
+  hasBases: false
+};
+
+function toggleBaseInfrastructure() {
+  const status = document.getElementById('alliance-base-status').value;
+  allianceState.hasBases = (status === 'active');
+  
+  const capLabel = document.getElementById('ui-max-cap');
+  capLabel.innerText = allianceState.hasBases ? "∞" : "5";
+  
+  // Enforce retrospective capping limits immediately if bases are lost
+  if (!allianceState.hasBases && allianceState.supporters > 5) {
+    allianceState.supporters = 5;
+    document.getElementById('ui-supporter-count').innerText = 5;
+    document.getElementById('insurgency-log').style.color = '#b91c1c';
+    document.getElementById('insurgency-log').innerText = "⚠️ Base network collapsed! Supporters stack forced to discard excess cards down to the 5-card maximum limit.";
+  }
+}
+
+function generateSupporter() {
+  if (!allianceState.hasBases && allianceState.supporters >= 5) {
+    document.getElementById('insurgency-log').style.color = '#b91c1c';
+    document.getElementById('insurgency-log').innerText = "❌ Supporter Stack Overflow! You cannot cross 5 cards without an established Base. Card was discarded.";
+    return;
+  }
+  
+  allianceState.supporters += 1;
+  document.getElementById('ui-supporter-count').innerText = allianceState.supporters;
+  document.getElementById('insurgency-log').style.color = '#558b2f';
+  document.getElementById('insurgency-log').innerText = `📦 Mobilized! Supporter added to the underground reserve stash.`;
+}
+
+function spreadSympathy() {
+  if (allianceState.supporters < 1) {
+    document.getElementById('insurgency-log').style.color = '#b91c1c';
+    document.getElementById('insurgency-log').innerText = "❌ No cards available in your Supporters stack to deploy sympathy.";
+    return;
+  }
+  
+  const selectedSuit = document.getElementById('sympathy-suit-select').value;
+  allianceState.supporters -= 1;
+  document.getElementById('ui-supporter-count').innerText = allianceState.supporters;
+  
+  const grid = document.getElementById('sympathy-tokens-grid');
+  const tokenNode = document.createElement('div');
+  let icon = selectedSuit === 'fox' ? "🦊" : selectedSuit === 'rabbit' ? "🐰" : "🐭";
+  tokenNode.className = `sympathy-badge-token sympathy-node-${selectedSuit}`;
+  tokenNode.innerText = icon;
+  grid.appendChild(tokenNode);
+  
+  document.getElementById('insurgency-log').style.color = '#15803d';
+  document.getElementById('insurgency-log').innerText = `✊ Spread sympathy into a ${selectedSuit.toUpperCase()} clearing!`;
+}
+
+
+
+
+
+
+// Vagabond Satchel Simulation State Machine
+let vagabondInventory = [
+  { id: 'boot', name: '🥾 Boot', status: 'ready' },
+  { id: 'sword', name: '⚔️ Sword', status: 'ready' },
+  { id: 'torch', name: ' Torch', status: 'ready' },
+  { id: 'hammer', name: '🔨 Hammer', status: 'ready' }
+];
+
+function renderSatchelUI() {
+  const readyPool = document.getElementById('satchel-ready-pool');
+  const damagedPool = document.getElementById('satchel-damaged-pool');
+  
+  // Wipe container HTML targets clean
+  readyPool.innerHTML = '';
+  damagedPool.innerHTML = '';
+
+  vagabondInventory.forEach(item => {
+    const bead = document.createElement('div');
+    bead.className = `item-bead status-${item.status}`;
+    bead.innerText = item.name;
+
+    if (item.status === 'damaged') {
+      damagedPool.appendChild(bead);
+    } else {
+      readyPool.appendChild(bead);
+    }
+  });
+}
+
+function useVagabondItem(itemId) {
+  const item = vagabondInventory.find(i => i.id === itemId);
+  const log = document.getElementById('satchel-log');
+  
+  if (!item || item.status === 'damaged') {
+    log.innerText = `❌ Action Blocked! That item is currently damaged and cannot be exhausted.`;
+    return;
+  }
+  
+  if (item.status === 'exhausted') {
+    log.innerText = `⚠️ Item is already exhausted. You need to refresh it during Birdsong!`;
+    return;
+  }
+
+  item.status = 'exhausted';
+  log.innerText = `⚙️ Exhausted ${item.name} to execute a character action step.`;
+  renderSatchelUI();
+}
+
+function processVagabondHit() {
+  // Find the first available item that isn't already broken
+  const functionalItem = vagabondInventory.find(i => i.status !== 'damaged');
+  const log = document.getElementById('satchel-log');
+
+  if (!functionalItem) {
+    log.innerText = `🛡️ All items are already destroyed! Remaining hits are entirely ignored.`;
+    return;
+  }
+
+  functionalItem.status = 'damaged';
+  log.innerHTML = `💥 <strong>HIT ASSIGNED!</strong> Your ${functionalItem.name} was broken and thrown into the Damaged Box!`;
+  renderSatchelUI();
+}
+
+function restInForest() {
+  // Reset all items back to optimal operational readiness status
+  vagabondInventory.forEach(item => {
+    item.status = 'ready';
+  });
+  
+  const log = document.getElementById('satchel-log');
+  log.innerText = `🌲 Safe Haven: Rested inside the forest. All items have been fully repaired and flipped face up!`;
+  renderSatchelUI();
+}
+
+
+
+
+
+
+// Underground Duchy State Tracking
+let duchyState = {
+  totalCrowns: 9,
+  deadCrowns: 0,
+  swayedMinisters: [] // Array of objects: { id, name, rank }
+};
+
+// Dictionary of minister metadata to check rank tiers accurately
+const ministerRegistry = {
+  foremole: { name: "Foremole", rank: "squire" },
+  captain: { name: "Captain", rank: "squire" },
+  marshal: { name: "Marshal", rank: "squire" },
+  brigadier: { name: "Brigadier", rank: "noble" },
+  banker: { name: "Banker", rank: "noble" },
+  mayor: { name: "Mayor", rank: "noble" },
+  duchess: { name: "Duchess of Mud", rank: "lord" },
+  baron: { name: "Baron of Dirt", rank: "lord" },
+  earl: { name: "Earl of Stone", rank: "lord" }
+};
+
+function renderCabinetUI() {
+  const container = document.getElementById('swayed-ministers-pool');
+  const emptyNote = document.getElementById('cabinet-empty-note');
+  
+  // Clear variable elements leaving placeholder intact if necessary
+  container.querySelectorAll('.minister-card-badge').forEach(el => el.remove());
+
+  if (duchyState.swayedMinisters.length === 0) {
+    emptyNote.style.display = "block";
+  } else {
+    emptyNote.style.display = "none";
+    duchyState.swayedMinisters.forEach(min => {
+      const badge = document.createElement('div');
+      badge.className = `minister-card-badge rank-${min.rank}`;
+      badge.innerText = `👑 ${min.name} (${min.rank.toUpperCase()})`;
+      container.appendChild(badge);
+    });
+  }
+
+  // Update counters
+  document.getElementById('ui-crown-count').innerText = duchyState.totalCrowns;
+  document.getElementById('ui-dead-crowns').innerText = duchyState.deadCrowns;
+}
+
+function swayMinister() {
+  const select = document.getElementById('duchy-minister-select');
+  const key = select.value;
+  const meta = ministerRegistry[key];
+
+  // Prevent duplicate swaying entries
+  if (duchyState.swayedMinisters.some(m => m.id === key)) {
+    document.getElementById('duchy-log').style.color = '#a13b2d';
+    document.getElementById('duchy-log').innerText = `⚠️ Parliament Error: The ${meta.name} has already been swayed to your Cabinet!`;
+    return;
+  }
+
+  if (duchyState.totalCrowns <= 0) {
+    document.getElementById('duchy-log').style.color = '#a13b2d';
+    document.getElementById('duchy-log').innerText = `❌ No remaining crowns available on your board layout to secure office positions!`;
+    return;
+  }
+
+  // Push into cabinet array list data models
+  duchyState.swayedMinisters.push({ id: key, name: meta.name, rank: meta.rank });
+  
+  const log = document.getElementById('duchy-log');
+  log.style.color = '#15803d';
+  log.innerText = `📜 Swayed the ${meta.name}! Placed a crown on their asset card and scored victory points.`;
+  
+  renderCabinetUI();
+}
+
+function triggerDuchyFailure() {
+  const log = document.getElementById('duchy-log');
+  
+  if (duchyState.swayedMinisters.length === 0) {
+    log.style.color = '#c2410c';
+    log.innerText = `💥 Buildings removed! You have no swayed ministers to lose, but you still discard 1 random card.`;
+    return;
+  }
+
+  // Find highest rank out of currently swayed cards (Lord > Noble > Squire)
+  let targetIndex = -1;
+  
+  // Look for Lords first
+  targetIndex = duchyState.swayedMinisters.findIndex(m => m.rank === 'lord');
+  
+  // If no lords, find Nobles
+  if (targetIndex === -1) {
+    targetIndex = duchyState.swayedMinisters.findIndex(m => m.rank === 'noble');
+  }
+  
+  // If no nobles, fallback to Squires
+  if (targetIndex === -1) {
+    targetIndex = duchyState.swayedMinisters.findIndex(m => m.rank === 'squire');
+  }
+
+  if (targetIndex !== -1) {
+    const deposed = duchyState.swayedMinisters.splice(targetIndex, 1)[0];
+    
+    // Penalize crown counts permanently
+    duchyState.totalCrowns -= 1;
+    duchyState.deadCrowns += 1;
+    
+    log.style.color = '#b91c1c';
+    log.innerHTML = `💥 <strong>THE PRICE OF FAILURE!</strong> A building was smashed. The <strong>${deposed.name} (${deposed.rank.toUpperCase()})</strong> was impeached, their crown permanently melted down, and a card discarded!`;
+    
+    renderCabinetUI();
+  }
+}
+
+
+
+
+
+
+
+// Corvid Conspiracy Engine State
+let activePlot = null; // Can hold an object: { type: 'bomb|raid|...', status: 'facedown|faceup' }
+
+function renderCorvidUI() {
+  const container = document.getElementById('corvid-plots-container');
+  const emptyNote = document.getElementById('plot-empty-note');
+  
+  // Clear token element if it exists
+  const existingToken = container.querySelector('.plot-token-badge');
+  if (existingToken) existingToken.remove();
+
+  if (!activePlot) {
+    emptyNote.style.display = "block";
+  } else {
+    emptyNote.style.display = "none";
+    const badge = document.createElement('div');
+    
+    if (activePlot.status === 'facedown') {
+      badge.className = "plot-token-badge plot-facedown";
+      badge.innerText = "❓";
+    } else {
+      badge.className = "plot-token-badge plot-faceup";
+      let icon = "💣";
+      if (activePlot.type === 'raid') icon = "📣";
+      if (activePlot.type === 'extortion') icon = "💰";
+      if (activePlot.type === 'snare') icon = "🕸️";
+      badge.innerText = icon;
+    }
+    container.appendChild(badge);
+  }
+}
+
+function plantPlot() {
+  const type = document.getElementById('corvid-plot-select').value;
+  activePlot = { type: type, status: 'facedown' };
+  
+  const log = document.getElementById('corvid-log');
+  log.style.color = '#6b21a8';
+  log.innerText = `🤫 Plot Planted! A facedown token has been seeded in the clearing. Embedded Agents (+1 Defending Hit) is now ACTIVE here.`;
+  
+  renderCorvidUI();
+}
+
+function triggerExposureGuess() {
+  const log = document.getElementById('corvid-log');
+  
+  if (!activePlot) {
+    log.style.color = '#c2410c';
+    log.innerText = `⚠️ No plots are currently on the board to guess.`;
+    return;
+  }
+  
+  if (activePlot.status === 'faceup') {
+    log.style.color = '#c2410c';
+    log.innerText = `⚠️ That plot is already face-up! Exposure only works against hidden tokens.`;
+    return;
+  }
+
+  const guess = document.getElementById('enemy-guess-select').value;
+  
+  if (guess === activePlot.type) {
+    // Correct guess!
+    log.style.color = '#b91c1c';
+    log.innerHTML = `💥 <strong>EXPOSURE SUCCESSFUL!</strong> The enemy guessed correctly (Type: ${guess.toUpperCase()}). The plot was safely disarmed and discarded.`;
+    activePlot = null;
+  } else {
+    // Incorrect guess!
+    log.style.color = '#15803d';
+    log.innerHTML = `🃏 <strong>EXPOSURE FAILED!</strong> The enemy guessed ${guess.toUpperCase()} but was WRONG! They hand a matching card over to your hand.`;
+  }
+  
+  renderCorvidUI();
+}
+
+function flipPlotFaceUp() {
+  const log = document.getElementById('corvid-log');
+  
+  if (!activePlot) {
+    log.style.color = '#c2410c';
+    log.innerText = `⚠️ Plant a facedown plot first before executing a Birdsong flip action.`;
+    return;
+  }
+  
+  if (activePlot.status === 'faceup') {
+    log.style.color = '#c2410c';
+    log.innerText = `⚠️ The token is already active and scoring points.`;
+    return;
+  }
+
+  activePlot.status = 'faceup';
+  log.style.color = '#15803d';
+  log.innerHTML = `🦅 <strong>PLOT FLIPPED!</strong> Revealed a <strong>${activePlot.type.toUpperCase()}</strong> token during Birdsong. Scored VP based on all face-up plots on the board!`;
+  
+  renderCorvidUI();
+}
+
+
+
+/* Oracle JavaScript */
+
+async function queryRuleOracle() {
+  const inputEl = document.getElementById('oracle-input');
+  const chatLogs = document.getElementById('chat-messages');
+  const prompt = inputEl ? inputEl.value.trim() : '';
+
+  if (!prompt || !chatLogs) return;
+
+  // Append User Question
+  chatLogs.innerHTML += `<div class="msg user">${prompt}</div>`;
+  inputEl.value = '';
+  chatLogs.scrollTop = chatLogs.scrollHeight;
+
+  // Temporary Thinking Indicator
+  const loadingDiv = document.createElement('div');
+  loadingDiv.className = 'msg bot';
+  loadingDiv.innerText = 'Consulting the Law of Root...';
+  chatLogs.appendChild(loadingDiv);
+  chatLogs.scrollTop = chatLogs.scrollHeight;
+
+  try {
+    // Ensure full HTTPS URL scheme is used
+    const res = await fetch('https://root-rules-proxy.elijahrogerson11.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    
+    if (!res.ok) throw new Error(`Server returned status ${res.status}`);
+
+    const data = await res.json();
+    loadingDiv.innerText = data.response || data.reply || "No response received.";
+  } catch (err) {
+    console.error('Oracle fetch error:', err);
+    loadingDiv.innerText = 'Error connecting to the rule server.';
+  }
+  
+  chatLogs.scrollTop = chatLogs.scrollHeight;
+}
+
+// Event Listeners for Button Click and Enter Key
+document.addEventListener('DOMContentLoaded', () => {
+  const submitBtn = document.getElementById('oracle-submit-btn');
+  const inputEl = document.getElementById('oracle-input');
+
+  if (submitBtn) {
+    submitBtn.addEventListener('click', queryRuleOracle);
+  }
+
+  if (inputEl) {
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        queryRuleOracle();
+      }
+    });
+  }
+});
+
+
+</script>
+
+
+
+
+
+
+
+</body>
+</html>
